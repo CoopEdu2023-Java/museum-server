@@ -130,11 +130,9 @@
         </executions>
         <configuration>
           <java>
-            <indent>
-              <tabs>true</tabs>
-              <spacesPerTab>4</spacesPerTab>
-            </indent>
-            <googleJavaFormat />
+            <googleJavaFormat>
+              <style>AOSP</style>
+            </googleJavaFormat>
             <trimTrailingWhitespace />
             <endWithNewline />
             <importOrder />
