@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Get the list of staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.java$')
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "No Java files staged. Skipping Spotless."
+  exit 0
+fi
+
+echo "Running Spotless on staged files..."
+# Run Spotless only on the staged files
+mvn spotless:apply
+
+if [ $? -ne 0 ]; then
+  echo "Spotless formatting failed. Please fix the issues and try again."
+  exit 1
+fi
+
+# Re-add only the files that were staged originally
+echo "Re-staging formatted files..."
+echo "$STAGED_FILES" | xargs git add
+
+# Verify if files were changed and staged
+if ! git diff --cached --exit-code > NUL 2>&1; then
+  echo "Some files were formatted and re-staged."
+  echo "Please proceed with the commit."
+else
+  echo "No formatting changes detected."
+fi
+
+exit 0
