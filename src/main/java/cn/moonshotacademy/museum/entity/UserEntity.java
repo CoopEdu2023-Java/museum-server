@@ -29,7 +29,7 @@ public class UserEntity {
         this.email = email;
         this.defaultName = defaultName;
         this.englishName = englishName;
-        this.intro = intro;
+            this.intro = intro;
     }
 }
 
