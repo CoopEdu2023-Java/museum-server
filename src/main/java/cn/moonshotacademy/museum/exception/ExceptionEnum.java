@@ -12,7 +12,7 @@ public enum ExceptionEnum {
     USER_NOT_FOUND(2002, "User not found"),
     WRONG_PASSWORD(2003, "Wrong password"),
     INVALID_ENTRY(3001, "Invalid entry"),
-    INVALID_ENTRY_TYPE(3002, "Invalid entry type");
+     INVALID_ENTRY_TYPE(3002, "Invalid entry type");
 
     private final Integer code;
     private final String message;
