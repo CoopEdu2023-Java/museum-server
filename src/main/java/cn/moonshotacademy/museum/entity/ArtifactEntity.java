@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+
+import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
@@ -33,6 +35,8 @@ public class ArtifactEntity {
             name = "user_artifact_rel",
             joinColumns = @JoinColumn(name = "artifact_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<ArtifactEntity> userList = new HashSet<>();
+    private Set<UserEntity> userList = new HashSet<>();
+
+    private String userName;
 }
 

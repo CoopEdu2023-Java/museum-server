@@ -41,7 +41,7 @@ public class ArtifactController {
             }
 
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            return new ResponseDto<>(0, "", artifactService.getFileList(pageable));
+            return new ResponseDto<>(0, "", artifactService.getArtifactList(pageable));
         } catch (NumberFormatException e) {
             log.warn("Pagination parameters are not numbers: page={}, size={}", page, size);
             throw new BusinessException(ExceptionEnum.INVALID_ENTRY_TYPE);

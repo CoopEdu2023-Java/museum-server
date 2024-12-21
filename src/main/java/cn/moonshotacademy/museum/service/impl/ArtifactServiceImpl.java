@@ -10,16 +10,22 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ArtifactServiceImpl implements ArtifactService {
-    private final ArtifactRepository ArtifactRepository;
+    private final ArtifactRepository artifactRepository;
 
     @Autowired
-    public ArtifactServiceImpl(ArtifactRepository ArtifactRepository) {
-        this.ArtifactRepository = ArtifactRepository;
+    public ArtifactServiceImpl(ArtifactRepository artifactRepository) {
+        this.artifactRepository = artifactRepository;
     }
 
     @Override
-    public Page<ArtifactEntity> getFileList(Pageable pageable) {
-        return ArtifactRepository.findByIsDeletedFalse(pageable);
+    public Page<ArtifactEntity> getArtifactList(Pageable pageable) {
+        Page<ArtifactEntity> artifacts = artifactRepository.findArtifactsWithUserName(pageable);
+        for (ArtifactEntity artifact : artifacts.getContent()) {
+            if (!artifact.getUserList().isEmpty()) {
+                // 假设我们只需要第一个用户的默认名称
+                artifact.setUserName(artifact.getUserList().iterator().next().getDefaultName());
+            }
+        }
+        return artifacts;
     }
-
 }
