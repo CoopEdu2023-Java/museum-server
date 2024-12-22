@@ -1,17 +1,16 @@
 package cn.moonshotacademy.museum.service.impl;
 
-import cn.moonshotacademy.museum.config.OSSConfig;
 import cn.moonshotacademy.museum.entity.FileEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.FileRepository;
 import cn.moonshotacademy.museum.service.FileService;
-import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClientBuilder;
-import java.io.InputStream;
-import java.util.Date;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,33 +19,26 @@ public class FileServiceImpl implements FileService {
 
     @Autowired private FileRepository fileRepository;
 
-    @Autowired private OSSConfig ossConfig;
+    @Value("${file.storage.disk}")
+    private String disk;
+
+    @Value("${file.storage.location}")
+    private String location;
 
     public int upload(MultipartFile file) {
 
         String name = UUID.randomUUID().toString() + file.getOriginalFilename();
-        String endpoint = ossConfig.getEndpoint(); // 域名
-        String bucketName = ossConfig.getBucketName(); // 仓库名
-        String url;
+        Path root = Paths.get(disk + location).toAbsolutePath().normalize();
+        Path url;
+
         try {
-            InputStream inputStream = file.getInputStream();
-            OSS ossClient =
-                    new OSSClientBuilder()
-                            .build(endpoint, ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
-            ossClient.putObject(bucketName, name, inputStream);
-
-            url =
-                    ossClient
-                            .generatePresignedUrl(
-                                    bucketName, name, new Date(System.currentTimeMillis() + 3600 * 1000))
-                            .toString();
-            ossClient.shutdown();
-
+            url = root.resolve(Paths.get(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), url);
         } catch (Exception e) {
             throw new BusinessException(ExceptionEnum.UPLOAD_FILE_ERROR);
         }
 
-        FileEntity fileEntity = new FileEntity(name, url, file.getContentType());
+        FileEntity fileEntity = new FileEntity(name, url.toString(), file.getContentType());
         fileRepository.save(fileEntity);
 
         return fileEntity.getId(); // 保存到数据库之后，返回自增的id
