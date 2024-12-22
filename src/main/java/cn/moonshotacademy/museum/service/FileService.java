@@ -1,8 +1,8 @@
 package cn.moonshotacademy.museum.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import cn.moonshotacademy.museum.dto.FileDto;
 
 public interface FileService {
 
-    public int upload(MultipartFile file);
+    public FileDto upload(FileDto fileDto);
 }
