@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class BusinessException extends RuntimeException {
-    private Integer code;
-    private String message;
+    private final Integer code;
+    private final String message;
 
     public BusinessException(ExceptionEnum exceptionEnum) {
         this.code = exceptionEnum.getCode();
