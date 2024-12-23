@@ -36,7 +36,6 @@ public class ArtifactEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<UserEntity> userList = new HashSet<>();
 
-
     private String userName;
 }
 
