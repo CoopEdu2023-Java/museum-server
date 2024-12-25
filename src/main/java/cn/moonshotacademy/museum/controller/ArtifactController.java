@@ -6,7 +6,6 @@ import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.service.ArtifactService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,19 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping("/")
+@RequestMapping("/artifacts")
 public class ArtifactController {
     private final ArtifactService artifactService;
 
-    @Autowired
     public ArtifactController(ArtifactService ArtifactService) {
         this.artifactService = ArtifactService;
     }
 
-    @GetMapping("/Artifacts")
+    @GetMapping
     public ResponseDto<Page<ArtifactEntity>> getFileList(
-            @RequestParam(defaultValue = "0") String page,
-            @RequestParam(defaultValue = "10") String size,
+            @RequestParam String page,
+            @RequestParam String size,
             @RequestParam String search) {
         try {
             int pageNumber = Integer.parseInt(page);
@@ -41,7 +39,7 @@ public class ArtifactController {
             }
 
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            return new ResponseDto<>(0, "", artifactService.getArtifactList(pageable));
+            return ResponseDto.success(artifactService.getArtifactList(pageable));
         } catch (NumberFormatException e) {
             log.warn("Pagination parameters are not numbers: page={}, size={}", page, size);
             throw new BusinessException(ExceptionEnum.INVALID_ENTRY_TYPE);

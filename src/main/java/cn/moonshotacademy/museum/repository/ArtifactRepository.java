@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ArtifactRepository extends JpaRepository<ArtifactEntity, Long> {
     @Query("SELECT a FROM ArtifactEntity a LEFT JOIN FETCH a.userList u WHERE a.isDeleted = FALSE")
-    Page<ArtifactEntity> findArtifactsWithUserName(Pageable pageable);
+    Page<ArtifactEntity> findArtifactsByUsername(Pageable pageable);
 }

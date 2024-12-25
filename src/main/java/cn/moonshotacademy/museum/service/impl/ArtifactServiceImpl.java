@@ -19,13 +19,6 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public Page<ArtifactEntity> getArtifactList(Pageable pageable) {
-        Page<ArtifactEntity> artifacts = artifactRepository.findArtifactsWithUserName(pageable);
-        for (ArtifactEntity artifact : artifacts.getContent()) {
-            if (!artifact.getUserList().isEmpty()) {
-                // 假设我们只需要第一个用户的默认名称
-                artifact.setUserName(artifact.getUserList().iterator().next().getDefaultName());
-            }
-        }
-        return artifacts;
+        return artifactRepository.findArtifactsByUsername(pageable);
     }
 }
