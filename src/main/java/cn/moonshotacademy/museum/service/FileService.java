@@ -1,8 +1,8 @@
 package cn.moonshotacademy.museum.service;
 
-import cn.moonshotacademy.museum.dto.FileDto;
+import cn.moonshotacademy.museum.dto.UploadDto;
 
 public interface FileService {
 
-    public FileDto upload(FileDto fileDto);
+    int upload(UploadDto uploadDto);
 }

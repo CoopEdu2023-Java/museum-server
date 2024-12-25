@@ -1,6 +1,6 @@
 package cn.moonshotacademy.museum.service.impl;
 
-import cn.moonshotacademy.museum.dto.FileDto;
+import cn.moonshotacademy.museum.dto.UploadDto;
 import cn.moonshotacademy.museum.entity.FileEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
@@ -26,9 +26,9 @@ public class FileServiceImpl implements FileService {
     @Value("${file.storage.location}")
     private String location;
 
-    public FileDto upload(FileDto fileDto) {
+    public int upload(UploadDto uploadDto) {
 
-        MultipartFile file = fileDto.getFile();
+        MultipartFile file = uploadDto.getFile();
 
         String name = UUID.randomUUID().toString() + file.getOriginalFilename();
         Path root = Paths.get(disk + location).toAbsolutePath().normalize();
@@ -43,6 +43,6 @@ public class FileServiceImpl implements FileService {
         FileEntity fileEntity = new FileEntity(name, url.toString(), file.getContentType());
         fileRepository.save(fileEntity);
 
-        return new FileDto(null, fileEntity.getId()); // 保存到数据库之后，返回自增的id
+        return fileEntity.getId(); // 保存到数据库之后，返回自增的id
     }
 }

@@ -9,9 +9,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileDto {
+public class UploadDto {
 
     private MultipartFile file;
 
-    @Nullable private int id;
+    @Nullable
+    private int id;
 }
