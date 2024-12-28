@@ -6,6 +6,7 @@ import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.FileRepository;
 import cn.moonshotacademy.museum.service.FileService;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -36,7 +37,7 @@ public class FileServiceImpl implements FileService {
         try {
             url = root.resolve(Paths.get(file.getOriginalFilename()));
             Files.copy(file.getInputStream(), url);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new BusinessException(ExceptionEnum.UPLOAD_FILE_ERROR);
         }
 
