@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class FileServiceImplTest {
     @Mock FileRepository fileRepository;
-
     @InjectMocks FileServiceImpl fileService;
 
     @Test
@@ -40,7 +39,8 @@ public class FileServiceImplTest {
         int fileId = 1;
         given(fileRepository.findById(fileId)).willReturn(Optional.empty());
 
-        BusinessException exception = assertThrows(BusinessException.class, () -> fileService.deleteFile(fileId));
+        BusinessException exception =
+                assertThrows(BusinessException.class, () -> fileService.deleteFile(fileId));
 
         assertEquals(exception.getCode(), ExceptionEnum.FILE_NOT_FOUND.getCode());
     }
@@ -51,8 +51,9 @@ public class FileServiceImplTest {
         FileEntity fileEntity = new FileEntity("", "");
         fileEntity.setDeleted(true);
         given(fileRepository.findById(fileId)).willReturn(Optional.of(fileEntity));
-        
-        BusinessException exception = assertThrows(BusinessException.class, () -> fileService.deleteFile(fileId));
+
+        BusinessException exception =
+                assertThrows(BusinessException.class, () -> fileService.deleteFile(fileId));
 
         assertEquals(exception.getCode(), ExceptionEnum.FILE_NOT_FOUND.getCode());
     }
