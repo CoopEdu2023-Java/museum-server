@@ -35,7 +35,7 @@ public class FileServiceImpl implements FileService {
         Path root = Paths.get(disk + location).toAbsolutePath().normalize();
         Path url;
         try {
-            url = root.resolve(Paths.get(file.getOriginalFilename()));
+            url = root.resolve(Paths.get(name));
             Files.copy(file.getInputStream(), url);
         } catch (IOException e) {
             throw new BusinessException(ExceptionEnum.UPLOAD_FILE_ERROR);
