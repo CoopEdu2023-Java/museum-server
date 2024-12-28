@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class FileServiceImpl implements FileService {
 
         MultipartFile file = uploadDto.getFile();
 
-        String name = UUID.randomUUID().toString() + file.getOriginalFilename();
+        String name = System.currentTimeMillis() + file.getOriginalFilename();
         Path root = Paths.get(disk + location).toAbsolutePath().normalize();
         Path url;
         try {
