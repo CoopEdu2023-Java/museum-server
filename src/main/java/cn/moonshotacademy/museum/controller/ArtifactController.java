@@ -7,6 +7,9 @@ import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.service.ArtifactService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+
+
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +29,7 @@ public class ArtifactController {
 
     @GetMapping
     public ResponseDto<Page<ArtifactEntity>> getFileList(
-            @RequestParam String page,
-            @RequestParam String size,
-            @RequestParam String search) {
+            @RequestParam String page, @RequestParam String size, @RequestParam String search) {
         try {
             int pageNumber = Integer.parseInt(page);
             int pageSize = Integer.parseInt(size);
@@ -44,6 +45,5 @@ public class ArtifactController {
             log.warn("Pagination parameters are not numbers: page={}, size={}", page, size);
             throw new BusinessException(ExceptionEnum.INVALID_ENTRY_TYPE);
         }
-
     }
 }
