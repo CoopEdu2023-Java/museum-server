@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/msa_museum
     username: postgres
-    password: postgres
+    password: _E{68ov~NK.9M1XK8+6yH3=;_hs9'P,+sVn9$ggK.}-$p;3Ls$
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
