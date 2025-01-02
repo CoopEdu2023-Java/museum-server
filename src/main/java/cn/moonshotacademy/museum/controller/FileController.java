@@ -22,7 +22,7 @@ public class FileController {
     }
     @PostMapping("/batch")
     public ResponseDto<List<Integer>> uploadMultipleFiles(@ModelAttribute MultipleFilesDto files) throws IOException {
-        if(files.getFiles().size() == 1) throw new BusinessException(ExceptionEnum.NULL_FILELIST);
+        if(files.getFiles().size() == 1 && files.getFiles() == null) throw new BusinessException(ExceptionEnum.NULL_FILELIST);
         for(MultipartFile file: files.getFiles()) {
             if (file.getOriginalFilename().isBlank()) {
                 throw new BusinessException(ExceptionEnum.NULL_FILENAME);

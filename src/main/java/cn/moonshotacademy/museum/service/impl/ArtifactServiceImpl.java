@@ -14,11 +14,15 @@ import cn.moonshotacademy.museum.service.ArtifactService;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ArtifactServiceImpl implements ArtifactService {
+
     private final ArtifactRepository artifactRepository;
     private final FileProperties fileProperties;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
@@ -34,16 +38,29 @@ public class ArtifactServiceImpl implements ArtifactService {
         MultipartFile image = requestData.getImage();
         String originalFilename = getNewFileName(image);
         validateFileType(image);
+        
+        // Retrieve the artifact entity
         ArtifactEntity targetEntity = artifactRepository.findById(artifactId)
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
 
+        // Define file storage path
         String filePath = fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
-        File destination = new File(filePath);
-        image.transferTo(destination);
+        Path destinationPath = Paths.get(filePath);
+        
+        // Ensure the directory exists before saving the file
+        ensureDirectoryExists(destinationPath.getParent().toFile());
+        
+        // Save the file using Files.write()
+        Files.write(destinationPath, image.getBytes());
 
-        targetEntity.setAvatarUrl(filePath);
+        // Construct file URL (assuming it's accessible publicly)
+        String fileUrl = fileProperties.getArtifactAvatarUrlBase() + originalFilename;
+
+        // Update the entity with the file URL
+        targetEntity.setAvatarUrl(fileUrl);
         artifactRepository.save(targetEntity);
     }
+
     private void validateFileType(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
@@ -55,10 +72,13 @@ public class ArtifactServiceImpl implements ArtifactService {
             throw new BusinessException(ExceptionEnum.TYPE_NOTALLOW);
         }
     }
+
     private String getFileExtension(String filename) {
         int dotIndex = filename.lastIndexOf(".");
         return (dotIndex > 0) ? filename.substring(dotIndex + 1) : "";
     }
+
+    // Generate a new file name using timestamp to avoid name conflicts
     private static String getNewFileName(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
@@ -72,7 +92,14 @@ public class ArtifactServiceImpl implements ArtifactService {
         }
 
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String baseName = dotIndex > 0 ? originalFilename.substring(0, dotIndex) : originalFilename;
-        return baseName + "_" + timestamp + extension;
+        String baseName = originalFilename.substring(0, dotIndex);
+        return baseName + "_" + timestamp + extension;  // New file name with timestamp
+    }
+
+    // Ensure the directory exists before file upload
+    private void ensureDirectoryExists(File directory) {
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new BusinessException(ExceptionEnum.FAIL_UPLOAD);
+        }
     }
 }

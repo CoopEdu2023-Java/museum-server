@@ -14,6 +14,9 @@ import cn.moonshotacademy.museum.service.UserService;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,19 +37,25 @@ public class UserServiceImpl implements UserService {
         MultipartFile image = requestData.getImage();
         String originalFilename = getNewFileName(image);
         validateFileType(image);
+        
         if (originalFilename.isBlank()) {
             throw new BusinessException(ExceptionEnum.NULL_FILENAME);
         }
+
         UserEntity targetEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
         String filePath = fileProperties.getUserAvatarLocation() + File.separator + originalFilename;
-        File destination = new File(filePath);
-        image.transferTo(destination);
+        Path destinationPath = Paths.get(filePath);
+        
+        ensureDirectoryExists(destinationPath.getParent().toFile());
+        Files.write(destinationPath, image.getBytes());
 
-        targetEntity.setAvatarUrl(filePath);
+        String fileUrl = fileProperties.getUserAvatarUrlBase() + originalFilename;
+        targetEntity.setAvatarUrl(fileUrl);
         userRepository.save(targetEntity);
     }
+
     private void validateFileType(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
@@ -58,10 +67,13 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ExceptionEnum.TYPE_NOTALLOW);
         }
     }
+
     private String getFileExtension(String filename) {
         int dotIndex = filename.lastIndexOf(".");
         return (dotIndex > 0) ? filename.substring(dotIndex + 1) : "";
     }
+
+    // 生成新的文件名，避免文件名冲突
     private static String getNewFileName(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {
@@ -75,7 +87,14 @@ public class UserServiceImpl implements UserService {
         }
 
         String timestamp = String.valueOf(System.currentTimeMillis());
-        String baseName = dotIndex > 0 ? originalFilename.substring(0, dotIndex) : originalFilename;
+        String baseName = originalFilename.substring(0, dotIndex);
         return baseName + "_" + timestamp + extension;
+    }
+
+    // 确保目录存在，如果目录不存在则创建
+    private void ensureDirectoryExists(File directory) {
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new BusinessException(ExceptionEnum.FAIL_UPLOAD);
+        }
     }
 }
