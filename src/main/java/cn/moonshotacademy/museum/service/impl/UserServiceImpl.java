@@ -10,6 +10,7 @@ import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.UserRepository;
 import cn.moonshotacademy.museum.service.UserService;
+import cn.moonshotacademy.museum.service.ImageService;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,11 +24,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileProperties fileProperties;
+    private final ImageService imageService;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
 
-    public UserServiceImpl(FileProperties fileProperties, UserRepository userRepository) {
+    public UserServiceImpl(FileProperties fileProperties, UserRepository userRepository, ImageService imageService) {
         this.fileProperties = fileProperties;
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     @Override
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
         String filePath = fileProperties.getUserAvatarLocation() + File.separator + originalFilename;
-        Path destinationPath = Paths.get(filePath);
+        Path destinationPath = Paths.get(imageService.createThumbnailedImage(filePath, 200, 200));
         
         ensureDirectoryExists(destinationPath.getParent().toFile());
         Files.write(destinationPath, image.getBytes());

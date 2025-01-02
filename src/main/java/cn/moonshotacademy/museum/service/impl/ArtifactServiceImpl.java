@@ -11,7 +11,10 @@ import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.ArtifactRepository;
 import cn.moonshotacademy.museum.repository.UserRepository;
 import cn.moonshotacademy.museum.service.ArtifactService;
+import cn.moonshotacademy.museum.service.ImageService;
 import java.util.Arrays;
+
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -32,7 +35,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ArtifactServiceImpl implements ArtifactService {
     private final ArtifactRepository artifactRepository;
     private final UserRepository userRepository;
-    private FileProperties fileProperties;
+    private final ImageService imageService;
+    private final FileProperties fileProperties;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
     
         @Override
@@ -51,14 +55,6 @@ public class ArtifactServiceImpl implements ArtifactService {
         }
     
         @Override
-        public String createThumbnailedPicture(String inputFilePath) {
-            String outputFilePath = "Thumbnailed" + "_" + inputFilePath;
-    
-            return outputFilePath;
-        }
-    
-    
-        @Override
         public Page<ArtifactEntity> getArtifactList(Pageable pageable) {
             return artifactRepository.findArtifactsByUsername(pageable);
         }
@@ -68,10 +64,11 @@ public class ArtifactServiceImpl implements ArtifactService {
             return artifactRepository.searchByKeyword(keyword, pageable);
         }
 
-        public ArtifactServiceImpl(FileProperties fileProperties, ArtifactRepository artifactRepository , UserRepository userRepository) {
+        public ArtifactServiceImpl(FileProperties fileProperties, ArtifactRepository artifactRepository , UserRepository userRepository, ImageService imageService) {
             this.fileProperties = fileProperties;
             this.artifactRepository = artifactRepository;
             this.userRepository = userRepository;
+            this.imageService = imageService;
         }
 
     @Override
@@ -86,7 +83,7 @@ public class ArtifactServiceImpl implements ArtifactService {
 
         // Define file storage path
         String filePath = fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
-        Path destinationPath = Paths.get(filePath);
+        Path destinationPath = Paths.get(imageService.createThumbnailedImage(filePath, 1000, 1000));
         
         // Ensure the directory exists before saving the file
         ensureDirectoryExists(destinationPath.getParent().toFile());

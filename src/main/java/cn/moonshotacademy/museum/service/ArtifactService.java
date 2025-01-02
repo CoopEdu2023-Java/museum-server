@@ -17,15 +17,13 @@ public interface ArtifactService {
     ArtifactEntity getArtifactById(int id);
 
     int createEmptyArtifact();
-    
-    String createThumbnailedPicture(String inputFilePath);
-    
+        
     void deleteArtifact(Integer artifactId);
     
     ArtifactEntity updateArtifactAndUser(Integer artifactId, UpdateDto dto);
     
     int uploadArtifact(ArtifactDto artifactDto, int artifactId);
-    
+
     Page<ArtifactEntity> getArtifactList(Pageable pageable);
 
     Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable);
