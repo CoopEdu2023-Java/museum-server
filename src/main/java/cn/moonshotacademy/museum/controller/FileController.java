@@ -2,6 +2,7 @@ package cn.moonshotacademy.museum.controller;
 
 import cn.moonshotacademy.museum.dto.MultipleFilesDto;
 import cn.moonshotacademy.museum.dto.ResponseDto;
+import cn.moonshotacademy.museum.dto.UploadDto;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.service.FileService;
@@ -30,5 +31,17 @@ public class FileController {
         }
         List<Integer> result = fileService.uploadMultipleFiles(files);
         return ResponseDto.success(result);
+    }
+    @DeleteMapping("/{file-id}")
+    public ResponseDto<Void> deleteFile(@PathVariable("file-id") int fileId) {
+        fileService.deleteFile(fileId);
+        return ResponseDto.success();
+    }
+    @PostMapping("/upload")
+    public ResponseDto<Integer> uploadFile(UploadDto uploadDto) throws IOException {
+        if (uploadDto.getFile().isEmpty()) {
+            throw new BusinessException(ExceptionEnum.EMPTY_FILE);
+        }
+        return ResponseDto.success(fileService.upload(uploadDto));
     }
 }

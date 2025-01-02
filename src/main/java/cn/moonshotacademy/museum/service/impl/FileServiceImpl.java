@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.moonshotacademy.museum.config.FileProperties;
 import cn.moonshotacademy.museum.dto.MultipleFilesDto;
+import cn.moonshotacademy.museum.dto.UploadDto;
 import cn.moonshotacademy.museum.entity.FileEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
@@ -72,6 +73,50 @@ public class FileServiceImpl implements FileService {
 
         return uploadedFiles;
     }
+    @Override
+    public void deleteFile(int fileId) {
+        FileEntity file =
+                fileRepository
+                        .findById(fileId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.FILE_NOT_FOUND));
+        if (file.isDeleted()) {
+            throw new BusinessException(ExceptionEnum.FILE_NOT_FOUND);
+        }
+        file.setDeleted(true);
+        fileRepository.save(file);
+    }
+    @Override
+    @Transactional
+    public int upload(UploadDto uploadDto) throws IOException {
+    MultipartFile file = uploadDto.getFile();
+
+    // Generate a new file name
+    String originalFilename = getNewFileName(file);
+
+    if (originalFilename.isBlank()) {
+        throw new BusinessException(ExceptionEnum.NULL_FILENAME);
+    }
+
+    // Define the file storage path
+    String filePath = fileProperties.getStorageLocation() + File.separator + originalFilename;
+    File destination = new File(filePath);
+
+    // Ensure the directory exists
+    ensureDirectoryExists(destination.getParentFile());
+
+    // Write file to the storage path
+    Path path = Paths.get(filePath);
+    Files.write(path, file.getBytes());  // Write the file bytes to the defined path
+
+    // Save the file information into the database
+    FileEntity uploadedFile = new FileEntity();
+    uploadedFile.setName(originalFilename);
+    uploadedFile.setType(file.getContentType());
+    uploadedFile.setUrl(filePath);
+    fileRepository.save(uploadedFile);
+
+    return uploadedFile.getId(); // Return the ID after saving to the database
+}
 
     // Ensure the directory exists, if not, create it
     private void ensureDirectoryExists(File directory) {

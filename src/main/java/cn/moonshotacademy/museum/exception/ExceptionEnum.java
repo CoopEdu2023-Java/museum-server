@@ -20,6 +20,7 @@ public enum ExceptionEnum {
     NULL_FILELIST(4004, "Cannot upload NULL filelist"),
     TYPE_NOTALLOW(4005, "This file type is not allowed"),
     NULL_FILENAME(4006, "File name cannot be null"),
+    FILE_NOT_FOUND(4007, "File not found"),
     INVALID_ENTRY(5001, "Invalid entry"),
     INVALID_ENTRY_TYPE(5002, "Invalid entry type");
 
