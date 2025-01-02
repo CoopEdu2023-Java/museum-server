@@ -16,7 +16,7 @@ public class ArtifactController {
     @Autowired ArtifactService artifactService;
     @Autowired private ArtifactRepository artifactRepository;
 
-    @PatchMapping("/{artifactId}")
+    @DeleteMapping("/{artifactId}")
     public ResponseDto<Void> deleteArtifact(@PathVariable Integer artifactId) {
         ArtifactEntity artifact =
                 artifactRepository
@@ -29,7 +29,7 @@ public class ArtifactController {
         return ResponseDto.success();
     }
 
-    @PatchMapping("/restoreArtifact/{artifactId}")
+    @PatchMapping("/{artifactId}/restore")
     public ResponseDto<Void> restoreArtifact(@PathVariable Integer artifactId) {
         ArtifactEntity artifact =
                 artifactRepository

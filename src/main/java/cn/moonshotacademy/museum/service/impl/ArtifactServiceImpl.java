@@ -26,9 +26,7 @@ public class ArtifactServiceImpl implements ArtifactService {
                 artifactRepository
                         .findById(artifactId)
                         .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
-        if (artifact.getIsDeleted()) {
-            artifact.setIsDeleted(false);
-        }
+        artifact.setIsDeleted(false);
         artifactRepository.save(artifact);
     }
 }
