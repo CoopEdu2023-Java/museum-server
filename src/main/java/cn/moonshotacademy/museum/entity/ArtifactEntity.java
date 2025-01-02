@@ -30,9 +30,5 @@ public class ArtifactEntity {
 
     private String type;
 
-    private Boolean is_deleted;
-
-    public ArtifactEntity(Boolean is_deleted) {
-        this.is_deleted = is_deleted;
-    }
+    private Boolean isDeleted;
 }

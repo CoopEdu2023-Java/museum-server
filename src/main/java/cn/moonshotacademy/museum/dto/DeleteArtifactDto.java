@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DeleteArtifactDto {
-    public Boolean is_deleted;
+    public Boolean isDeleted;
     private Integer id;
 }

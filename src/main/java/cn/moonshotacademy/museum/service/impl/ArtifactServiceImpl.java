@@ -1,6 +1,5 @@
 package cn.moonshotacademy.museum.service.impl;
 
-import cn.moonshotacademy.museum.dto.DeleteArtifactDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
@@ -13,20 +12,22 @@ import org.springframework.stereotype.Service;
 public class ArtifactServiceImpl implements ArtifactService {
     @Autowired private ArtifactRepository artifactRepository;
 
-    public void deleteArtifact(DeleteArtifactDto deleteArtifactDto) {
+    public void deleteArtifact(Integer artifactId) {
         ArtifactEntity artifact =
                 artifactRepository
-                        .findById((deleteArtifactDto.getId()))
+                        .findById(artifactId)
                         .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
-        artifact.setIs_deleted(true);
+        artifact.setIsDeleted(true);
         artifactRepository.save(artifact);
     }
 
-    public void restoreArtifact(DeleteArtifactDto deleteArtifactDto) {
+    public void restoreArtifact(Integer artifactId) {
         ArtifactEntity artifact =
-                artifactRepository.findById((deleteArtifactDto.getId())).orElseThrow();
-        if (deleteArtifactDto.getIs_deleted()) {
-            deleteArtifactDto.setIs_deleted(false);
+                artifactRepository
+                        .findById(artifactId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        if (artifact.getIsDeleted()) {
+            artifact.setIsDeleted(false);
         }
         artifactRepository.save(artifact);
     }
