@@ -29,5 +29,3 @@ public class FileEntity {
         this.url = url;
     }
 }
-
-    

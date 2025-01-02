@@ -1,4 +1,3 @@
-
 package cn.moonshotacademy.museum.entity;
 
 import jakarta.persistence.Entity;
@@ -10,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
@@ -36,4 +34,3 @@ public class ArtifactEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<UserEntity> userList = new HashSet<>();
 }
-

@@ -1,4 +1,3 @@
-
 package cn.moonshotacademy.museum.entity;
 
 import jakarta.persistence.Entity;
@@ -32,5 +31,3 @@ public class UserEntity {
         this.intro = intro;
     }
 }
-
-    
