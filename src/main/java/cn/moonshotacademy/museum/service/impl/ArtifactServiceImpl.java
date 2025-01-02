@@ -163,7 +163,7 @@ public class ArtifactServiceImpl implements ArtifactService {
             UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
             user.setEmail(dto.getEmail());
-            user.setRole(dto.getRole());
+            user.setType(dto.getRole());
             user.setDefaultName(dto.getDefaultName());
             user.setEnglishName(dto.getEnglishName());
             user.setIntro(dto.getUserIntro());

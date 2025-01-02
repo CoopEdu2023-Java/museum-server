@@ -12,4 +12,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+file:
+  storageLocation: public/files
+  userAvatarLocation: public/userAvatars
+  artifactAvatarLocation: public/artifactAvatars
+
+  storageUrlBase: /files/
+  userAvatarUrlBase: /userAvatars/
+  artifactAvatarUrlBase: /artifactAvatars/
 

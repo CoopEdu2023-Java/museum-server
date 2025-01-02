@@ -47,12 +47,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
         String filePath = fileProperties.getUserAvatarLocation() + File.separator + originalFilename;
-        Path destinationPath = Paths.get(imageService.createThumbnailedImage(filePath, 200, 200));
+        Path destinationPath = Paths.get(filePath);
         
         ensureDirectoryExists(destinationPath.getParent().toFile());
         Files.write(destinationPath, image.getBytes());
 
-        String fileUrl = fileProperties.getUserAvatarUrlBase() + originalFilename;
+        String fileUrl = imageService.createThumbnailedImage(filePath, 200, 200);
         targetEntity.setAvatarUrl(fileUrl);
         userRepository.save(targetEntity);
     }
