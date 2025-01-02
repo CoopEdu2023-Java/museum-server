@@ -1,20 +1,18 @@
 spring:
+  application:
+    name: msa-museum-server
   datasource:
-    url: jdbc:postgresql://49.51.202.173:5432/msa_museum
+    url: jdbc:postgresql://localhost:5432/msa_museum
     username: postgres
-    password: 20071028zhanG!
+    password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 file:
   storageLocation: C://upload/files
   userAvatarLocation: C://upload/userAvatars
