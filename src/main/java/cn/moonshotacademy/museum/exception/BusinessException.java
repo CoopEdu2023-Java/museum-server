@@ -6,9 +6,12 @@ import lombok.Getter;
 public class BusinessException extends RuntimeException {
     private final Integer code;
     private final String message;
+    
 
     public BusinessException(ExceptionEnum exceptionEnum) {
         this.code = exceptionEnum.getCode();
         this.message = exceptionEnum.getMessage();
     }
+
+    
 }
