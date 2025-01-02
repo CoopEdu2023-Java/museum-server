@@ -12,6 +12,7 @@ public enum ExceptionEnum {
     USER_NOT_FOUND(2002, "User not found"),
     WRONG_PASSWORD(2003, "Wrong password"),
     ARTIFACT_NOT_FOUND(2004, "Artifact not found"),
+    FILE_NOT_FOUND(2005, "File not found"),
     ;
 
     private final Integer code;
