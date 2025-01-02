@@ -16,7 +16,7 @@ public class ArtifactController {
     @Autowired ArtifactService artifactService;
     @Autowired private ArtifactRepository artifactRepository;
 
-    @DeleteMapping("/{artifactId}")
+    @PatchMapping("/{artifactId}")
     public ResponseDto<Void> deleteArtifact(@PathVariable Integer artifactId) {
         ArtifactEntity artifact =
                 artifactRepository
