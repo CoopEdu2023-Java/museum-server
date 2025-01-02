@@ -11,6 +11,7 @@ public interface ArtifactService {
     ArtifactEntity getArtifactById(int id);
     int createEmptyArtifact();
     String createThumbnailedPicture(String inputFilePath);
+    void deleteArtifact(Integer artifactId);
     Page<ArtifactEntity> getArtifactList(Pageable pageable);
 
     Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable);

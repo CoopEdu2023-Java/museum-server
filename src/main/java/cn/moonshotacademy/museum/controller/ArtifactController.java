@@ -14,7 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +55,7 @@ public class ArtifactController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/get")
     public ResponseDto<ArtifactEntity> getArtifactById(@PathVariable String id) {
         int artifactId;
         
@@ -70,9 +70,17 @@ public class ArtifactController {
 
         return new ResponseDto<ArtifactEntity>(data);
     }
+
     @GetMapping("/create")
     public ResponseDto<Integer> createNewArtifact() {
         Integer data = artifactService.createEmptyArtifact();
         return new ResponseDto<Integer>(data);
     }
+
+    @PatchMapping("/{artifactId}")
+    public ResponseDto<Void> deleteArtifact(@PathVariable Integer artifactId) {
+        artifactService.deleteArtifact(artifactId);
+        return ResponseDto.success();
+    }
+
 }

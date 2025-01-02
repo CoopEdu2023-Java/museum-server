@@ -48,4 +48,17 @@ public class ArtifactServiceImpl implements ArtifactService {
     public Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable) {
         return artifactRepository.searchByKeyword(keyword, pageable);
     }
+
+    @Override
+    public void deleteArtifact(Integer artifactId) {
+        ArtifactEntity artifact =
+                artifactRepository
+                        .findById(artifactId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        if (artifact.isDeleted()){
+            throw new BusinessException(ExceptionEnum.ARTIFACT_ALREADY_DELETED);
+        }
+        artifact.setDeleted(true);
+        artifactRepository.save(artifact);
+    }
 }
