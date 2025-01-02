@@ -4,10 +4,12 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/msa_museum
     username: postgres
-    password: postgres
+    password: root
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
+      spring.jpa.show-sql: true
+      spring.jpa.properties.hibernate.format_sql: true
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:

@@ -14,7 +14,7 @@ public class ErrorHandler {
     @ResponseBody
     public ResponseDto<Void> exceptionHandler(Exception e) {
         log.error("Unknown Error: " + e.getMessage());
-        return ResponseDto.error(1000, "Unknown Error");
+        return ResponseDto.error(200, "Unknown Error");
     }
 
     @ExceptionHandler(value = BusinessException.class)
