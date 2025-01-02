@@ -1,25 +1,26 @@
-      
 package cn.moonshotacademy.museum.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "\"user\"")
-@Data
 @NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "\"user\"") // PostgreSQL 中避免使用保留字
 public class UserEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String role;
     private String email;
+    private String role;
     private String defaultName;
     private String englishName;
     private String intro;
@@ -31,6 +32,7 @@ public class UserEntity {
         this.englishName = englishName;
         this.intro = intro;
     }
-}
 
-    
+    @ManyToMany(mappedBy = "userList")  
+    private Set<ArtifactEntity> artifactList = new HashSet<>();
+}

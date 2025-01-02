@@ -1,35 +1,26 @@
 package cn.moonshotacademy.museum.controller;
 
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
-import cn.moonshotacademy.museum.service.*;
+import cn.moonshotacademy.museum.service.ArtifactService;
+import cn.moonshotacademy.museum.dto.ResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import cn.moonshotacademy.museum.dto.RequestDto;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/artifact")
+@RequestMapping("/artifacts")
 public class ArtifactController {
 
     @Autowired
     private ArtifactService artifactService;
 
-    @PostMapping("/{artifactId}/update")
-    public ResponseEntity<String> updateArtifact(
-            @PathVariable Integer artifactId,
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String intro,
-            @RequestParam(required = false) String competency,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String type) {
+    @PutMapping("/{artifactId}/update")
+    public ResponseDto<?> updateArtifactAndUser(
+            @PathVariable Integer artifactId,   
+            @RequestBody RequestDto RequestDto) {
+            ArtifactEntity updatedArtifact = artifactService.updateArtifactAndUser(artifactId, RequestDto);
 
-        ArtifactEntity updatedArtifact = artifactService.updateArtifact(artifactId, title, intro, competency, category, type);
-
-        if (updatedArtifact != null) {
-            return ResponseEntity.ok("Artifact updated successfully");
-        } else {
-            return ResponseEntity.ok("Fuck");
-        }
+            return ResponseDto.success("Artifact and User updated successfully. Artifact: " +
+                    updatedArtifact.toString());
     }
 }
