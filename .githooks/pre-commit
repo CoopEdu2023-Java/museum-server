@@ -10,7 +10,7 @@ fi
 
 echo "Running Spotless on staged files..."
 # Run Spotless only on the staged files
-mvn spotless:apply
+./mvnw spotless:apply
 
 if [ $? -ne 0 ]; then
   echo "Spotless formatting failed. Please fix the issues and try again."
