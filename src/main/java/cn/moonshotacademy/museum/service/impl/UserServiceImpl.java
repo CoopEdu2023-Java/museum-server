@@ -1,6 +1,5 @@
 package cn.moonshotacademy.museum.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +25,6 @@ public class UserServiceImpl implements UserService {
     private final FileProperties fileProperties;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
 
-    @Autowired
     public UserServiceImpl(FileProperties fileProperties, UserRepository userRepository) {
         this.fileProperties = fileProperties;
         this.userRepository = userRepository;

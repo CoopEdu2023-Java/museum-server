@@ -1,11 +1,15 @@
 package cn.moonshotacademy.museum.service.impl;
 
 import cn.moonshotacademy.museum.config.FileProperties;
+import cn.moonshotacademy.museum.dto.ArtifactDto;
 import cn.moonshotacademy.museum.dto.AvatarDto;
+import cn.moonshotacademy.museum.dto.UpdateDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
+import cn.moonshotacademy.museum.entity.UserEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.ArtifactRepository;
+import cn.moonshotacademy.museum.repository.UserRepository;
 import cn.moonshotacademy.museum.service.ArtifactService;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ArtifactServiceImpl implements ArtifactService {
     private final ArtifactRepository artifactRepository;
+    private final UserRepository userRepository;
     private FileProperties fileProperties;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
     
@@ -62,11 +67,12 @@ public class ArtifactServiceImpl implements ArtifactService {
         public Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable) {
             return artifactRepository.searchByKeyword(keyword, pageable);
         }
-        @Autowired
-        public ArtifactServiceImpl(FileProperties fileProperties, ArtifactRepository artifactRepository) {
+
+        public ArtifactServiceImpl(FileProperties fileProperties, ArtifactRepository artifactRepository , UserRepository userRepository) {
             this.fileProperties = fileProperties;
-        this.artifactRepository = artifactRepository;
-    }
+            this.artifactRepository = artifactRepository;
+            this.userRepository = userRepository;
+        }
 
     @Override
     public void uploadArtifactAvatar(AvatarDto requestData, int artifactId) throws IOException {
@@ -149,5 +155,60 @@ public class ArtifactServiceImpl implements ArtifactService {
         }
         artifact.setDeleted(true);
         artifactRepository.save(artifact);
+    }
+
+    @Override
+    public ArtifactEntity updateArtifactAndUser(Integer artifactId, UpdateDto dto) {
+        ArtifactEntity artifact = artifactRepository.findById(artifactId)
+            .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+
+        artifact.setTitle(dto.getTitle());
+        artifact.setIntro(dto.getIntro());
+        artifact.setCompetency(dto.getCompetency());
+        artifact.setType(dto.getType());
+
+        Set<UserEntity> currentUsers = artifact.getUserList();
+        Set<Integer> newUserIds = dto.getUserIds();
+        currentUsers.removeIf(user -> !newUserIds.contains(user.getId()));
+        for (Integer userId : dto.getUserIds()) {
+            UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+            user.setEmail(dto.getEmail());
+            user.setRole(dto.getRole());
+            user.setDefaultName(dto.getDefaultName());
+            user.setEnglishName(dto.getEnglishName());
+            user.setIntro(dto.getUserIntro());
+
+            currentUsers.add(user);
+
+            userRepository.save(user);
+        }
+
+        return artifactRepository.save(artifact);
+    }
+
+    @Override
+    public int uploadArtifact(ArtifactDto artifactDto, int artifactId) {
+        ArtifactEntity artifact =
+                artifactRepository
+                        .findById(artifactId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        artifact.setTitle(artifactDto.getTitle());
+        artifact.setAvatarUrl(artifactDto.getAvatarUrl());
+        artifact.setIntro(artifactDto.getIntro());
+        artifact.setCompetency(artifactDto.getCompetency());
+
+        for (Integer userId : artifactDto.getUserIds()) {
+            UserEntity user =
+                    userRepository
+                            .findById(userId)
+                            .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+
+            artifact.getUserList().add(user);
+        }
+
+        artifactRepository.save(artifact);
+
+        return artifactId;
     }
 }

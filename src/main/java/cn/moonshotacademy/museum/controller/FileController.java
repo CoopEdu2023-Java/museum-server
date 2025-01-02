@@ -21,6 +21,7 @@ public class FileController {
     public FileController(FileService fileService) {
         this.fileService = fileService;
     }
+    
     @PostMapping("/batch")
     public ResponseDto<List<Integer>> uploadMultipleFiles(@ModelAttribute MultipleFilesDto files) throws IOException {
         if(files.getFiles().size() == 1 && files.getFiles() == null) throw new BusinessException(ExceptionEnum.NULL_FILELIST);
