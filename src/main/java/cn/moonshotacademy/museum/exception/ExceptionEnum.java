@@ -10,8 +10,12 @@ public enum ExceptionEnum {
 
     USER_EXISTS(2001, "User exists"),
     USER_NOT_FOUND(2002, "User not found"),
-    WRONG_PASSWORD(2003, "Wrong password");
-
+    WRONG_PASSWORD(2003, "Wrong password"),
+    NULL_FILENAME(4001, "File name cannot be null"),
+    FAIL_UPLOAD(4003, "Fail to write to the Database"),
+    NULL_FILELIST(4004, "Cannot upload NULL filelist"),
+    TYPE_NOTALLOW(4005, "This file type is not allowed"),
+    ARTIFACT_NOT_FOUND(3006, "Artifact not found");
     private final Integer code;
     private final String message;
 }
