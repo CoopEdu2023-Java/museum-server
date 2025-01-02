@@ -14,7 +14,6 @@ import cn.moonshotacademy.museum.service.ArtifactService;
 import cn.moonshotacademy.museum.service.ImageService;
 import java.util.Arrays;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
@@ -62,13 +61,6 @@ public class ArtifactServiceImpl implements ArtifactService {
         @Override
         public Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable) {
             return artifactRepository.searchByKeyword(keyword, pageable);
-        }
-
-        public ArtifactServiceImpl(FileProperties fileProperties, ArtifactRepository artifactRepository , UserRepository userRepository, ImageService imageService) {
-            this.fileProperties = fileProperties;
-            this.artifactRepository = artifactRepository;
-            this.userRepository = userRepository;
-            this.imageService = imageService;
         }
 
     @Override
