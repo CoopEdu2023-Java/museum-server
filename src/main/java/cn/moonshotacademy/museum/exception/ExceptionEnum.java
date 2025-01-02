@@ -17,7 +17,9 @@ public enum ExceptionEnum {
 
     EMPTY_FILE(4001, "File is empty"),
     UPLOAD_FILE_ERROR(4002, "An error occurred while uploading the file"),
-
+    NULL_FILELIST(4004, "Cannot upload NULL filelist"),
+    TYPE_NOTALLOW(4005, "This file type is not allowed"),
+    NULL_FILENAME(4006, "File name cannot be null"),
     INVALID_ENTRY(5001, "Invalid entry"),
     INVALID_ENTRY_TYPE(5002, "Invalid entry type");
 

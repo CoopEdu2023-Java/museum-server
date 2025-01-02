@@ -1,5 +1,6 @@
 package cn.moonshotacademy.museum.controller;
 
+import cn.moonshotacademy.museum.dto.AvatarDto;
 import cn.moonshotacademy.museum.dto.ResponseDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
@@ -8,6 +9,8 @@ import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.service.ArtifactService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -74,5 +77,10 @@ public class ArtifactController {
     public ResponseDto<Integer> createNewArtifact() {
         Integer data = artifactService.createEmptyArtifact();
         return new ResponseDto<Integer>(data);
+    }
+    @PostMapping("/{artifactId}/avatars/add")
+    public ResponseDto<Void> uploadArtifactAvatar(@PathVariable int artifactId, @ModelAttribute AvatarDto image) throws IOException {
+            artifactService.uploadArtifactAvatar(image, artifactId);
+            return ResponseDto.success();
     }
 }
