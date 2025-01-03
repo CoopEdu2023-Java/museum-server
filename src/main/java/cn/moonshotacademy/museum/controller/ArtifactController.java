@@ -77,7 +77,7 @@ public class ArtifactController {
         return new ResponseDto<ArtifactEntity>(data);
     }
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     public ResponseDto<Integer> createNewArtifact() {
         Integer data = artifactService.createEmptyArtifact();
         return new ResponseDto<Integer>(data);
