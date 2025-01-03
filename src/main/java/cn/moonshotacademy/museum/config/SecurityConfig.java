@@ -26,7 +26,7 @@ public class SecurityConfig {
                         req ->
                                 req.requestMatchers("/tests/*")
                                         .permitAll()
-                                        .requestMatchers("/users/login", "/users/**", "/artifacts/**", "/competencies")
+                                        .requestMatchers("/**")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

@@ -1,5 +1,6 @@
 package cn.moonshotacademy.museum.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +23,8 @@ public class FileEntity {
     private String type;
     private boolean isMain = false;
     private boolean isDeleted = false;
-    private int artifact_id;
+    @Column(nullable = true)
+    private Integer artifact_id;
 
     public FileEntity(String name, String url) {
         this.name = name;
