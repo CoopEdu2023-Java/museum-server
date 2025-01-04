@@ -37,7 +37,7 @@ public class ArtifactController {
     @Autowired
     private ArtifactService artifactService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseDto<Page<ArtifactEntity>> getFileList(
             @RequestParam String page, @RequestParam String size, @RequestParam String search) {
         try {

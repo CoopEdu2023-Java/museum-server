@@ -27,6 +27,7 @@ public class ArtifactEntity {
     private String competency;
     private boolean isDeleted = false;
     private String avatarUrl;
+    private String avatarUrlThumb;
     private String type;
 
     @ManyToMany

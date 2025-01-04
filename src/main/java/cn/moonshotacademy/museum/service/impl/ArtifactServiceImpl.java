@@ -69,25 +69,20 @@ public class ArtifactServiceImpl implements ArtifactService {
         String originalFilename = getNewFileName(image);
         validateFileType(image);
         
-        // Retrieve the artifact entity
         ArtifactEntity targetEntity = artifactRepository.findById(artifactId)
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
 
-        // Define file storage path
         String filePath = fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
         Path destinationPath = Paths.get(filePath);
         
-        // Ensure the directory exists before saving the file
         ensureDirectoryExists(destinationPath.getParent().toFile());
         
-        // Save the file using Files.write()
         Files.write(destinationPath, image.getBytes());
 
-        // Construct file URL (assuming it's accessible publicly)
         String fileUrl = imageService.createThumbnailedImage(filePath, 1000, 1000, false);
 
-        // Update the entity with the file URL
-        targetEntity.setAvatarUrl(fileUrl);
+        targetEntity.setAvatarUrl(filePath);
+        targetEntity.setAvatarUrlThumb(fileUrl);
         artifactRepository.save(targetEntity);
     }
 
