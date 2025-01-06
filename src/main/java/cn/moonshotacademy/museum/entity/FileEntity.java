@@ -23,8 +23,9 @@ public class FileEntity {
     private String type;
     private boolean isMain = false;
     private boolean isDeleted = false;
-    @Column(nullable = true)
-    private Integer artifact_id;
+
+    @Column(nullable = true, name = "artifact_id")
+    private Integer artifactId;
 
     public FileEntity(String name, String url) {
         this.name = name;

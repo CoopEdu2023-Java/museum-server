@@ -6,13 +6,10 @@ import cn.moonshotacademy.museum.dto.ResponseDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
-
 import cn.moonshotacademy.museum.service.ArtifactService;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +19,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @Slf4j
@@ -34,8 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArtifactController {
 
-    @Autowired
-    private ArtifactService artifactService;
+    @Autowired private ArtifactService artifactService;
 
     @GetMapping("")
     public ResponseDto<Page<ArtifactEntity>> getFileList(
@@ -64,7 +60,7 @@ public class ArtifactController {
     @GetMapping("/{id}/get")
     public ResponseDto<ArtifactEntity> getArtifactById(@PathVariable String id) {
         int artifactId;
-        
+
         try {
             artifactId = Integer.parseInt(id);
 
@@ -79,7 +75,8 @@ public class ArtifactController {
 
     @PostMapping("/create")
     public ResponseDto<Integer> createNewArtifact() {
-        Integer data = artifactService.createEmptyArtifact();
+        System.out.println("123123");
+        int data = artifactService.createEmptyArtifact();
         return new ResponseDto<Integer>(data);
     }
 
@@ -90,14 +87,24 @@ public class ArtifactController {
     }
 
     @PostMapping("/{artifactId}/avatars/add")
-    public ResponseDto<Void> uploadArtifactAvatar(@PathVariable int artifactId, @ModelAttribute AvatarDto image) throws IOException {
-            artifactService.uploadArtifactAvatar(image, artifactId);
-            return ResponseDto.success();
+    public ResponseDto<Void> uploadArtifactAvatar(
+            @PathVariable int artifactId, @ModelAttribute AvatarDto image) throws IOException {
+        artifactService.uploadArtifactAvatar(image, artifactId);
+        return ResponseDto.success();
     }
 
+    @PutMapping("/{artifactId}/update")
+    public ResponseDto<?> updateArtifactAndUser(
+            @RequestBody ArtifactDto request, @PathVariable int artifactId) {
+        validateArtifactDto(request);
+        int savedArtifactId = artifactService.uploadArtifact(request, artifactId);
+        return ResponseDto.success(savedArtifactId);
+            
+    }
+    
     @PostMapping("/artifact/{artifactId}/upload")
     public ResponseDto<Integer> createArtifact(
-            @RequestBody ArtifactDto request, @PathVariable("artifactId") int artifactId) {
+            @RequestBody ArtifactDto request, @PathVariable int artifactId) {
         validateArtifactDto(request);
         int savedArtifactId = artifactService.uploadArtifact(request, artifactId);
         return ResponseDto.success(savedArtifactId);
@@ -107,17 +114,11 @@ public class ArtifactController {
         if (artifactDto.getTitle() == null || artifactDto.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
-        if (artifactDto.getAvatarUrl() == null || artifactDto.getAvatarUrl().isEmpty()) {
-            throw new IllegalArgumentException("Avatar URL cannot be null or empty");
-        }
         if (artifactDto.getIntro() == null || artifactDto.getIntro().isEmpty()) {
             throw new IllegalArgumentException("Intro cannot be null or empty");
         }
         if (artifactDto.getCompetency() == null || artifactDto.getCompetency().isEmpty()) {
             throw new IllegalArgumentException("Competency cannot be null or empty");
-        }
-        if (artifactDto.getFileIds() == null || artifactDto.getFileIds().isEmpty()) {
-            throw new IllegalArgumentException("File IDs cannot be null or empty");
         }
         if (artifactDto.getUserIds() == null || artifactDto.getUserIds().isEmpty()) {
             throw new IllegalArgumentException("User IDs cannot be null or empty");

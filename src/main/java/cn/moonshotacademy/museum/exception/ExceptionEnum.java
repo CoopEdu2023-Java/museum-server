@@ -26,7 +26,6 @@ public enum ExceptionEnum {
     INVALID_ENTRY(5001, "Invalid entry"),
     INVALID_ENTRY_TYPE(5002, "Invalid entry type");
 
-
     private final Integer code;
     private final String message;
 }
