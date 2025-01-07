@@ -99,4 +99,28 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ExceptionEnum.UPLOAD_FILE_ERROR);
         }
     }
+
+    public UserEntity findLearner(String name){
+        UserEntity user = userRepository.findByUsername(name);
+        if(user == null){
+            throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        if(user.getType() == "learner"){
+            return user;
+        }else{
+            throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
+        }
+    }
+
+    public UserEntity findInstructor(String name){
+        UserEntity user = userRepository.findByUsername(name);
+        if(user == null){
+            throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        if(user.getType() == "instructor"){
+            return user;
+        }else{
+            throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
+        }
+    }
 }
