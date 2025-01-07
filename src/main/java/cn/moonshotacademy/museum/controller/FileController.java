@@ -42,7 +42,8 @@ public class FileController {
     }
 
     @PostMapping("{artifactId}/upload")
-    public ResponseDto<Integer> uploadFile(UploadDto uploadDto, @PathVariable int artifactId) throws IOException {
+    public ResponseDto<Integer> uploadFile(UploadDto uploadDto, @PathVariable int artifactId)
+            throws IOException {
         if (uploadDto.getFile().isEmpty()) {
             throw new BusinessException(ExceptionEnum.EMPTY_FILE);
         }

@@ -100,26 +100,40 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public UserEntity findLearner(String name){
-        UserEntity user = userRepository.findByUsername(name);
-        if(user == null){
+    public UserEntity findLearner(String name) {
+        UserEntity user =
+                (userRepository.findByDefaultName(name) == null)
+                        ? userRepository
+                                .findByEnglishName(name)
+                                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND))
+                        : userRepository
+                                .findByDefaultName(name)
+                                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+        if (user == null) {
             throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
         }
-        if(user.getType() == "learner"){
+        if (user.getType().equals("learner")) {
             return user;
-        }else{
+        } else {
             throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
         }
     }
 
-    public UserEntity findInstructor(String name){
-        UserEntity user = userRepository.findByUsername(name);
-        if(user == null){
+    public UserEntity findInstructor(String name) {
+        UserEntity user =
+                (userRepository.findByDefaultName(name) == null)
+                        ? userRepository
+                                .findByEnglishName(name)
+                                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND))
+                        : userRepository
+                                .findByDefaultName(name)
+                                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+        if (user == null) {
             throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
         }
-        if(user.getType() == "instructor"){
+        if (user.getType().equals("instructor")) {
             return user;
-        }else{
+        } else {
             throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
         }
     }

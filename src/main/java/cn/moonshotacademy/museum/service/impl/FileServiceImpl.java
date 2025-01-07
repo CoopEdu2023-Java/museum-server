@@ -108,7 +108,7 @@ public class FileServiceImpl implements FileService {
 
         // Save the file information into the database
         FileEntity uploadedFile = new FileEntity();
-        uploadedFile.setArtifactId(artifactId); 
+        uploadedFile.setArtifactId(artifactId);
         uploadedFile.setName(originalFilename);
         uploadedFile.setType(file.getContentType());
         uploadedFile.setUrl(filePath);

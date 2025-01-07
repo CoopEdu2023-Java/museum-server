@@ -99,9 +99,8 @@ public class ArtifactController {
         validateArtifactDto(request);
         int savedArtifactId = artifactService.uploadArtifact(request, artifactId);
         return ResponseDto.success(savedArtifactId);
-            
     }
-    
+
     @PostMapping("/artifact/{artifactId}/upload")
     public ResponseDto<Integer> createArtifact(
             @RequestBody ArtifactDto request, @PathVariable int artifactId) {
