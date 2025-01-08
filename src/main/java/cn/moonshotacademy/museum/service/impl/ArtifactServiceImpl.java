@@ -5,6 +5,7 @@ import cn.moonshotacademy.museum.dto.ArtifactDto;
 import cn.moonshotacademy.museum.dto.AvatarDto;
 import cn.moonshotacademy.museum.dto.UpdateDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
+import cn.moonshotacademy.museum.entity.FileEntity;
 import cn.moonshotacademy.museum.entity.UserEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
@@ -41,6 +42,12 @@ public class ArtifactServiceImpl implements ArtifactService {
                 artifactRepository
                         .findById(id) // AI说这里返回的是Optional<ArtifactEntity>，需要orElseThrow
                         .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        System.out.println(artifact.getFiles());
+        for (FileEntity file : artifact.getFiles()) {
+            if (file.isDeleted()) {
+                artifact.getFiles().remove(file);
+            }
+        }
         System.out.println(artifact.getFiles());
         return artifact;
     }
