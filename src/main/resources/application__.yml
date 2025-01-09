@@ -2,9 +2,9 @@ spring:
   application:
     name: msa-museum-server
   datasource:
-    url: jdbc:postgresql://49.51.202.173:5432/msa_museum
+    url: jdbc:postgresql://43.140.225.61:1145/msa_museum
     username: postgres
-    password: 20071028zhanG!
+    password: 7gX@L#wP!9bRz^k8N2d&Fq3TmVp4C%Yj6H&xK5JrZLtWQ*Bm7v9!
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
