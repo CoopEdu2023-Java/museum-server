@@ -12,19 +12,21 @@ public interface ArtifactRepository extends JpaRepository<ArtifactEntity, Intege
     Page<ArtifactEntity> findArtifactsByUsername(Pageable pageable);
 
     @Query(
-            value =
-                    "SELECT * FROM artifact WHERE "
-                            + "(is_deleted = FALSE) AND "
-                            + "(to_tsvector('english', title) @@ plainto_tsquery('english', :keyword)) "
-                            + "OR (title ILIKE ALL (array(SELECT '%' || k || '%' "
-                            + "FROM unnest(string_to_array(:keyword, ' ')) AS k))) "
-                            + "ORDER BY ts_rank(to_tsvector('english', title), plainto_tsquery('english', :keyword)) DESC",
-            countQuery =
-                    "SELECT count(*) FROM artifact WHERE "
-                            + "(is_deleted = FALSE) AND "
-                            + "(to_tsvector('english', title) @@ plainto_tsquery('english', :keyword)) "
-                            + "OR (title ILIKE ALL (array(SELECT '%' || k || '%' "
-                            + "FROM unnest(string_to_array(:keyword, ' ')) AS k)))",
-            nativeQuery = true)
+        value =
+                "SELECT * FROM artifact WHERE "
+                        + "(is_deleted = FALSE) AND ("
+                        + "(to_tsvector('english', title) @@ plainto_tsquery('english', :keyword)) "
+                        + "OR (title ILIKE ALL (array(SELECT '%' || k || '%' "
+                        + "FROM unnest(string_to_array(:keyword, ' ')) AS k))) "
+                        + ") "
+                        + "ORDER BY ts_rank(to_tsvector('english', title), plainto_tsquery('english', :keyword)) DESC",
+        countQuery =
+                "SELECT count(*) FROM artifact WHERE "
+                        + "(is_deleted = FALSE) AND ("
+                        + "(to_tsvector('english', title) @@ plainto_tsquery('english', :keyword)) "
+                        + "OR (title ILIKE ALL (array(SELECT '%' || k || '%' "
+                        + "FROM unnest(string_to_array(:keyword, ' ')) AS k))) "
+                        + ")",
+        nativeQuery = true)
     Page<ArtifactEntity> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }
