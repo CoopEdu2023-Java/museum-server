@@ -1,7 +1,4 @@
 spring:
-  server:
-    port: 8080
-    address: 0.0.0.0
   servlet:
     multipart:
       max-file-size: 100MB
@@ -9,8 +6,9 @@ spring:
   application:
     name: msa-museum-server
   datasource:
-    url: jdbc:postgresql://localhost:5432/msa_museum
-    username: xianxian
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -20,11 +18,9 @@ spring:
       ddl-auto: update
     show-sql: true
 file:
-  storageLocation: public/files
-  userAvatarLocation: public/userAvatars
-  artifactAvatarLocation: public/artifactAvatars
-
-  storageUrlBase: /files/
-  userAvatarUrlBase: /userAvatars/
-  artifactAvatarUrlBase: /artifactAvatars/
-
+  storageLocation: ${FILE_STORAGE_LOCATION}
+  userAvatarLocation: ${FILE_USER_AVATAR_LOCATION}
+  artifactAvatarLocation: ${FILE_ARTIFACT_AVATAR_LOCATION}
+  storageUrlBase: ${FILE_STORAGE_URL_BASE}
+  userAvatarUrlBase: ${FILE_USER_AVATAR_URL_BASE}
+  artifactAvatarUrlBase: ${FILE_ARTIFACT_AVATAR_URL_BASE}
