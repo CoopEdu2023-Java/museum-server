@@ -14,12 +14,14 @@ public interface ArtifactRepository extends JpaRepository<ArtifactEntity, Intege
     @Query(
             value =
                     "SELECT * FROM artifact WHERE "
+                            + "(is_deleted = FALSE) AND "
                             + "(to_tsvector('english', title) @@ plainto_tsquery('english', :keyword)) "
                             + "OR (title ILIKE ALL (array(SELECT '%' || k || '%' "
                             + "FROM unnest(string_to_array(:keyword, ' ')) AS k))) "
                             + "ORDER BY ts_rank(to_tsvector('english', title), plainto_tsquery('english', :keyword)) DESC",
             countQuery =
                     "SELECT count(*) FROM artifact WHERE "
+                            + "(is_deleted = FALSE) AND "
                             + "(to_tsvector('english', title) @@ plainto_tsquery('english', :keyword)) "
                             + "OR (title ILIKE ALL (array(SELECT '%' || k || '%' "
                             + "FROM unnest(string_to_array(:keyword, ' ')) AS k)))",
