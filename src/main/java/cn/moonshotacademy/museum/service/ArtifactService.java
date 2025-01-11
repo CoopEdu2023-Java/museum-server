@@ -26,4 +26,6 @@ public interface ArtifactService {
     Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable);
 
     public void uploadArtifactAvatar(AvatarDto requestData, int artifactId) throws IOException;
+
+    public void deleteArtifactAvatar(int artifactId);
 }

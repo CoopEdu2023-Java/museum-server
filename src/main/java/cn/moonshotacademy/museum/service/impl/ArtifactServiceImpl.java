@@ -96,6 +96,16 @@ public class ArtifactServiceImpl implements ArtifactService {
         artifactRepository.save(targetEntity);
     }
 
+    public void deleteArtifactAvatar(int artifactId) {
+        ArtifactEntity artifact =
+                artifactRepository
+                        .findById(artifactId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        artifact.setAvatarUrl(null);
+        artifact.setAvatarUrlThumb(null);
+        artifactRepository.save(artifact);
+    }
+    
     private void validateFileType(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         if (originalFilename == null || originalFilename.isBlank()) {

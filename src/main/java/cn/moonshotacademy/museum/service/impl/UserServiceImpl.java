@@ -2,11 +2,13 @@ package cn.moonshotacademy.museum.service.impl;
 
 import cn.moonshotacademy.museum.config.FileProperties;
 import cn.moonshotacademy.museum.dto.AvatarDto;
+import cn.moonshotacademy.museum.dto.LoginRequestDto;
 import cn.moonshotacademy.museum.entity.UserEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.UserRepository;
 import cn.moonshotacademy.museum.service.ImageService;
+import cn.moonshotacademy.museum.service.JwtService;
 import cn.moonshotacademy.museum.service.UserService;
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +26,14 @@ public class UserServiceImpl implements UserService {
     private final FileProperties fileProperties;
     private final ImageService imageService;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
+    private final JwtService jwtService;
 
     public UserServiceImpl(
-            FileProperties fileProperties, UserRepository userRepository, ImageService imageService) {
+            FileProperties fileProperties, UserRepository userRepository, ImageService imageService, JwtService jwtService) {
         this.fileProperties = fileProperties;
         this.userRepository = userRepository;
         this.imageService = imageService;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -55,6 +59,17 @@ public class UserServiceImpl implements UserService {
 
         String fileUrl = imageService.createThumbnailedImage(filePath, 200, 200, true);
         targetEntity.setAvatarUrl(fileUrl);
+        userRepository.save(targetEntity);
+    }
+
+    @Override
+    public void deleteUserAvatar(int userId) {
+        UserEntity targetEntity =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+
+        targetEntity.setAvatarUrl(null);
         userRepository.save(targetEntity);
     }
 
@@ -133,6 +148,30 @@ public class UserServiceImpl implements UserService {
         }
         if (user.getType().equals("instructor")) {
             return user;
+        } else {
+            throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
+        }
+    }
+
+    public String login(LoginRequestDto loginRequestDto) {
+        UserEntity userFromUserName;
+        if (userRepository.findByEnglishName(loginRequestDto.getName()) == null || userRepository.findByDefaultName(loginRequestDto.getName()) == null) {
+            throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
+        }else if (userRepository.findByEnglishName(loginRequestDto.getName()) == null){
+            System.out.println(111111111);
+            userFromUserName = userRepository.findByDefaultName(loginRequestDto.getName())
+                    .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+        }else{
+            System.out.println(222222222);
+            userFromUserName = userRepository.findByEnglishName(loginRequestDto.getName())
+                    .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+        }
+
+        UserEntity userFromEmail = userRepository.findByEmail(loginRequestDto.getEmail())
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+        System.out.println(userFromEmail);
+        if(userFromEmail.equals(userFromUserName)) {
+            return jwtService.setToken(userFromEmail.getId());
         } else {
             throw new BusinessException(ExceptionEnum.USER_NOT_FOUND);
         }

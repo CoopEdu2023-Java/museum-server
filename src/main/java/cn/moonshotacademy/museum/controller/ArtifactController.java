@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -90,6 +91,12 @@ public class ArtifactController {
     public ResponseDto<Void> uploadArtifactAvatar(
             @PathVariable int artifactId, @ModelAttribute AvatarDto image) throws IOException {
         artifactService.uploadArtifactAvatar(image, artifactId);
+        return ResponseDto.success();
+    }
+
+    @DeleteMapping("/{artifactId}/avatars/delete")
+    public ResponseDto<Void> deleteArtifactAvatar(@PathVariable int artifactId) {
+        artifactService.deleteArtifactAvatar(artifactId);
         return ResponseDto.success();
     }
 
