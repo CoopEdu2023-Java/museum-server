@@ -38,10 +38,9 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public ArtifactEntity getArtifactById(int id) {
-        ArtifactEntity artifact =
-                artifactRepository
-                        .findById(id) // AI说这里返回的是Optional<ArtifactEntity>，需要orElseThrow
-                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        ArtifactEntity artifact = artifactRepository
+                .findById(id) // AI说这里返回的是Optional<ArtifactEntity>，需要orElseThrow
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
         System.out.println(artifact.getFiles());
         for (FileEntity file : artifact.getFiles()) {
             if (file.isDeleted()) {
@@ -75,13 +74,11 @@ public class ArtifactServiceImpl implements ArtifactService {
         String originalFilename = getNewFileName(image);
         validateFileType(image);
 
-        ArtifactEntity targetEntity =
-                artifactRepository
-                        .findById(artifactId)
-                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        ArtifactEntity targetEntity = artifactRepository
+                .findById(artifactId)
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
 
-        String filePath =
-                fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
+        String filePath = fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
         Path destinationPath = Paths.get(filePath);
 
         ensureDirectoryExists(destinationPath.getParent().toFile());
@@ -139,10 +136,9 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public void deleteArtifact(Integer artifactId) {
-        ArtifactEntity artifact =
-                artifactRepository
-                        .findById(artifactId)
-                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        ArtifactEntity artifact = artifactRepository
+                .findById(artifactId)
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
         if (artifact.isDeleted()) {
             throw new BusinessException(ExceptionEnum.ARTIFACT_ALREADY_DELETED);
         }
@@ -152,10 +148,9 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public ArtifactEntity updateArtifactAndUser(Integer artifactId, UpdateDto dto) {
-        ArtifactEntity artifact =
-                artifactRepository
-                        .findById(artifactId)
-                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        ArtifactEntity artifact = artifactRepository
+                .findById(artifactId)
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
 
         artifact.setTitle(dto.getTitle());
         artifact.setIntro(dto.getIntro());
@@ -165,10 +160,9 @@ public class ArtifactServiceImpl implements ArtifactService {
         Set<Integer> newUserIds = dto.getUserIds();
         currentUsers.removeIf(user -> !newUserIds.contains(user.getId()));
         for (Integer userId : dto.getUserIds()) {
-            UserEntity user =
-                    userRepository
-                            .findById(userId)
-                            .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+            UserEntity user = userRepository
+                    .findById(userId)
+                    .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
             currentUsers.add(user);
 
@@ -180,19 +174,18 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public int uploadArtifact(ArtifactDto artifactDto, int artifactId) {
-        ArtifactEntity artifact =
-                artifactRepository
-                        .findById(artifactId)
-                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        ArtifactEntity artifact = artifactRepository
+                .findById(artifactId)
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
         artifact.setTitle(artifactDto.getTitle());
         artifact.setIntro(artifactDto.getIntro());
         artifact.setCompetency(artifactDto.getCompetency());
 
         for (Integer userId : artifactDto.getUserIds()) {
-            UserEntity user =
-                    userRepository
-                            .findById(userId)
-                            .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+            System.out.println("userId: " + userId);
+            UserEntity user = userRepository
+                    .findById(userId)
+                    .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
             artifact.getUserList().add(user);
         }

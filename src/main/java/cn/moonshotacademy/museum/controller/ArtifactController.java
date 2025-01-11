@@ -31,7 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArtifactController {
 
-    @Autowired private ArtifactService artifactService;
+    @Autowired
+    private ArtifactService artifactService;
 
     @GetMapping("")
     public ResponseDto<Page<ArtifactEntity>> getFileList(
