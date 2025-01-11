@@ -38,7 +38,7 @@ services:
       # 文件访问 URL 基础路径
       FILE_STORAGE_URL_BASE: /files/
       FILE_USER_AVATAR_URL_BASE: /userAvatars/
-      FILE_ARTIFACT_AVATAR_URL_BASE: /artifactAvatars
+      FILE_ARTIFACT_AVATAR_URL_BASE: /artifactAvatars/
 
 volumes:
   postgres_data:

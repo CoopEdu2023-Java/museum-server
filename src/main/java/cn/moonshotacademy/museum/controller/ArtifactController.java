@@ -101,7 +101,7 @@ public class ArtifactController {
         return ResponseDto.success(savedArtifactId);
     }
 
-    @PostMapping("/artifact/{artifactId}/upload")
+    @PostMapping("/{artifactId}/upload")
     public ResponseDto<Integer> createArtifact(
             @RequestBody ArtifactDto request, @PathVariable int artifactId) {
         validateArtifactDto(request);

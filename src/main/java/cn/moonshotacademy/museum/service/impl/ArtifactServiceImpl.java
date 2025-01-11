@@ -88,9 +88,8 @@ public class ArtifactServiceImpl implements ArtifactService {
 
         Files.write(destinationPath, image.getBytes());
 
-        filePath = filePath.replace(" ", "_");
+        filePath = fileProperties.getArtifactAvatarUrlBase() + originalFilename;
         String fileUrl = imageService.createThumbnailedImage(filePath, 1000, 1000, false);
-
         targetEntity.setAvatarUrl(filePath);
         targetEntity.setAvatarUrlThumb(fileUrl);
         artifactRepository.save(targetEntity);

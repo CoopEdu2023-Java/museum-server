@@ -12,15 +12,6 @@ sudo apt-get install -y docker.io
 echo "Installing docker-compose..."
 sudo apt-get install -y docker-compose
 
-echo "Configuring Docker to use Aliyun registry..."
-sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json > /dev/null <<EOF
-{
-  "registry-mirrors": [
-    "https://docker.m.daocloud.io"  
-  ]
-}
-EOF
 echo "Restarting Docker service..."
 sudo systemctl daemon-reload
 sudo systemctl restart docker
