@@ -6,11 +6,13 @@ import cn.moonshotacademy.museum.dto.ResponseDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
+import cn.moonshotacademy.museum.repository.ArtifactRepository;
 import cn.moonshotacademy.museum.service.ArtifactService;
 import java.io.IOException;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,11 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArtifactController {
 
-    @Autowired
-    private ArtifactService artifactService;
+    private final ArtifactService artifactService;
+    private final ArtifactRepository artifactRepository;
 
     @GetMapping("")
-    public ResponseDto<Page<ArtifactEntity>> getFileList(
+    public ResponseDto<Page<ArtifactEntity>> getArtifactList(
             @RequestParam String page, @RequestParam String size, @RequestParam String search) {
         try {
             int pageNumber = Integer.parseInt(page);
@@ -75,6 +77,16 @@ public class ArtifactController {
         return new ResponseDto<ArtifactEntity>(data);
     }
 
+    @GetMapping("/get")
+    public ResponseDto<List<ArtifactEntity>> getArtifactList(
+            @RequestParam String competency) {
+
+            if (competency.isEmpty()) {
+                return ResponseDto.success(artifactRepository.findAll());
+            }else{
+                return ResponseDto.success(artifactRepository.findByCompetency(competency));
+            }
+        }
     @PostMapping("/create")
     public ResponseDto<Integer> createNewArtifact() {
         System.out.println("123123");

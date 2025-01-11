@@ -1,17 +1,10 @@
-logging:
-  file:
-    name: logs/application.log
 spring:
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
   application:
     name: msa-museum-server
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: jdbc:postgresql://43.140.225.61:1145/msa_museum
+    username: postgres
+    password: 7gX@L#wP!9bRz^k8N2d&Fq3TmVp4C%Yj6H&xK5JrZLtWQ*Bm7v9!
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -20,10 +13,15 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  security:
+    enabled: false
 file:
-  storageLocation: ${FILE_STORAGE_LOCATION}
-  userAvatarLocation: ${FILE_USER_AVATAR_LOCATION}
-  artifactAvatarLocation: ${FILE_ARTIFACT_AVATAR_LOCATION}
-  storageUrlBase: ${FILE_STORAGE_URL_BASE}
-  userAvatarUrlBase: ${FILE_USER_AVATAR_URL_BASE}
-  artifactAvatarUrlBase: ${FILE_ARTIFACT_AVATAR_URL_BASE}
+  storageLocation: public/files
+  userAvatarLocation: public/userAvatars
+  artifactAvatarLocation: public/artifactAvatars
+
+  storageUrlBase: /files/
+  userAvatarUrlBase: /userAvatars/
+  artifactAvatarUrlBase: /artifactAvatars/
+
+
