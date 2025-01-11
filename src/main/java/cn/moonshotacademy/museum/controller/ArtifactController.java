@@ -32,7 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArtifactController {
 
-    @Autowired private ArtifactService artifactService;
+    @Autowired
+    private ArtifactService artifactService;
 
     @GetMapping("")
     public ResponseDto<Page<ArtifactEntity>> getFileList(
@@ -108,7 +109,7 @@ public class ArtifactController {
         return ResponseDto.success(savedArtifactId);
     }
 
-    @PostMapping("/artifact/{artifactId}/upload")
+    @PostMapping("/{artifactId}/upload")
     public ResponseDto<Integer> createArtifact(
             @RequestBody ArtifactDto request, @PathVariable int artifactId) {
         validateArtifactDto(request);

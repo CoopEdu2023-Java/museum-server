@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: msa-museum-server
+  datasource:
+    url: jdbc:postgresql://43.140.225.61:1145/msa_museum
+    username: postgres
+    password: 7gX@L#wP!9bRz^k8N2d&Fq3TmVp4C%Yj6H&xK5JrZLtWQ*Bm7v9!
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  security:
+    enabled: false
+file:
+  storageLocation: public/files
+  userAvatarLocation: public/userAvatars
+  artifactAvatarLocation: public/artifactAvatars
+
+  storageUrlBase: /files/
+  userAvatarUrlBase: /userAvatars/
+  artifactAvatarUrlBase: /artifactAvatars/
+
+

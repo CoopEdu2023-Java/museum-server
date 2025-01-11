@@ -21,9 +21,9 @@ public class ImageServiceImpl implements ImageService {
                             + inputFilePath.substring(inputFilePath.lastIndexOf("."));
         }
         try {
-            Thumbnails.of(inputFilePath)
+            Thumbnails.of("public" + inputFilePath)
                     .size(width, height) // 设置缩略图的大小
-                    .toFile(outputFilePath); // 指定输出文件
+                    .toFile("public" + outputFilePath); // 指定输出文件
         } catch (IOException e) {
             e.printStackTrace();
             return null;

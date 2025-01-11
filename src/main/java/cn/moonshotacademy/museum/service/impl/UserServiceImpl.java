@@ -56,9 +56,9 @@ public class UserServiceImpl implements UserService {
 
         ensureDirectoryExists(destinationPath.getParent().toFile());
         Files.write(destinationPath, image.getBytes());
-
+        filePath = fileProperties.getUserAvatarUrlBase() + originalFilename;
         String fileUrl = imageService.createThumbnailedImage(filePath, 200, 200, true);
-        targetEntity.setAvatarUrl(fileUrl);
+        targetEntity.setAvatarUrl(filePath);
         userRepository.save(targetEntity);
     }
 
