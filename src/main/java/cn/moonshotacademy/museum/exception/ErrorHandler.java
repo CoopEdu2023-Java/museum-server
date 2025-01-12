@@ -17,6 +17,7 @@ public class ErrorHandler {
         log.error("File upload error: " + e.getMessage());
         return ResponseDto.error(4002, "File size exceeds the maximum allowed limit");
     }
+
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public ResponseDto<Void> exceptionHandler(Exception e) {

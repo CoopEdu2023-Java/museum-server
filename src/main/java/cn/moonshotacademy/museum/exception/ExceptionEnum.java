@@ -12,6 +12,7 @@ public enum ExceptionEnum {
     USER_EXISTS(2001, "User exists"),
     USER_NOT_FOUND(2002, "User not found"),
     WRONG_PASSWORD(2003, "Wrong password"),
+    UNAUTHORIZED(2004, "Only a teacher can perform such action"),
 
     ARTIFACT_NOT_FOUND(3001, "Artifact not found"),
     ARTIFACT_ALREADY_DELETED(3002, "Artifact already deleted"),
@@ -25,7 +26,6 @@ public enum ExceptionEnum {
     FILE_NOT_FOUND(4007, "File not found"),
     INVALID_ENTRY(5001, "Invalid entry"),
     INVALID_ENTRY_TYPE(5002, "Invalid entry type");
-
 
     private final Integer code;
     private final String message;

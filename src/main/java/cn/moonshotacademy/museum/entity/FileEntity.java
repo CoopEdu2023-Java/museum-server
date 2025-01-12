@@ -23,6 +23,7 @@ public class FileEntity {
     private String type;
     private boolean isMain = false;
     private boolean isDeleted = false;
+
     @Column(nullable = true)
     private Integer artifact_id;
 

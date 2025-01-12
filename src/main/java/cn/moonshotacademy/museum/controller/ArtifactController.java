@@ -1,32 +1,22 @@
 package cn.moonshotacademy.museum.controller;
 
 import cn.moonshotacademy.museum.dto.ArtifactDto;
+import cn.moonshotacademy.museum.dto.AuthorizationDto;
 import cn.moonshotacademy.museum.dto.AvatarDto;
 import cn.moonshotacademy.museum.dto.ResponseDto;
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
-
 import cn.moonshotacademy.museum.service.ArtifactService;
+import cn.moonshotacademy.museum.service.SecurityService;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -34,8 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ArtifactController {
 
-    @Autowired
-    private ArtifactService artifactService;
+    @Autowired private SecurityService securityService;
+
+    @Autowired private ArtifactService artifactService;
 
     @GetMapping("")
     public ResponseDto<Page<ArtifactEntity>> getFileList(
@@ -64,7 +55,7 @@ public class ArtifactController {
     @GetMapping("/{id}/get")
     public ResponseDto<ArtifactEntity> getArtifactById(@PathVariable String id) {
         int artifactId;
-        
+
         try {
             artifactId = Integer.parseInt(id);
 
@@ -84,18 +75,24 @@ public class ArtifactController {
     }
 
     @PatchMapping("/{artifactId}")
-    public ResponseDto<Void> deleteArtifact(@PathVariable Integer artifactId) {
+    public ResponseDto<Void> deleteArtifact(
+            @PathVariable Integer artifactId, @RequestBody(required = false) AuthorizationDto request) {
+        if (request == null || request.getUserId() == null) {
+            throw new BusinessException(ExceptionEnum.MISSING_PARAMETERS);
+        }
+        securityService.checkTeacherPermission(request.getUserId());
         artifactService.deleteArtifact(artifactId);
         return ResponseDto.success();
     }
 
     @PostMapping("/{artifactId}/avatars/add")
-    public ResponseDto<Void> uploadArtifactAvatar(@PathVariable int artifactId, @ModelAttribute AvatarDto image) throws IOException {
-            artifactService.uploadArtifactAvatar(image, artifactId);
-            return ResponseDto.success();
+    public ResponseDto<Void> uploadArtifactAvatar(
+            @PathVariable int artifactId, @ModelAttribute AvatarDto image) throws IOException {
+        artifactService.uploadArtifactAvatar(image, artifactId);
+        return ResponseDto.success();
     }
 
-    @PostMapping("/artifact/{artifactId}/upload")
+    @PostMapping("/{artifactId}/upload")
     public ResponseDto<Integer> createArtifact(
             @RequestBody ArtifactDto request, @PathVariable("artifactId") int artifactId) {
         validateArtifactDto(request);

@@ -1,9 +1,5 @@
 package cn.moonshotacademy.museum.service.impl;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.moonshotacademy.museum.config.FileProperties;
 import cn.moonshotacademy.museum.dto.MultipleFilesDto;
 import cn.moonshotacademy.museum.dto.UploadDto;
@@ -12,7 +8,6 @@ import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.FileRepository;
 import cn.moonshotacademy.museum.service.FileService;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -47,13 +45,13 @@ public class FileServiceImpl implements FileService {
             // Define the file storage path
             String filePath = fileProperties.getStorageLocation() + File.separator + originalFilename;
             File destination = new File(filePath);
-            
+
             // Ensure the directory exists
             ensureDirectoryExists(destination.getParentFile());
-            
+
             // Write file to the storage path
             Path path = Paths.get(filePath);
-            Files.write(path, file.getBytes());  // Write the file bytes to the defined path
+            Files.write(path, file.getBytes()); // Write the file bytes to the defined path
 
             // Save the file information into the database
             FileEntity uploadedFile = new FileEntity();
@@ -71,6 +69,7 @@ public class FileServiceImpl implements FileService {
 
         return uploadedFiles;
     }
+
     @Override
     public void deleteFile(int fileId) {
         FileEntity file =
@@ -83,38 +82,39 @@ public class FileServiceImpl implements FileService {
         file.setDeleted(true);
         fileRepository.save(file);
     }
+
     @Override
     @Transactional
     public int upload(UploadDto uploadDto) throws IOException {
-    MultipartFile file = uploadDto.getFile();
+        MultipartFile file = uploadDto.getFile();
 
-    // Generate a new file name
-    String originalFilename = getNewFileName(file);
+        // Generate a new file name
+        String originalFilename = getNewFileName(file);
 
-    if (originalFilename.isBlank()) {
-        throw new BusinessException(ExceptionEnum.NULL_FILENAME);
+        if (originalFilename.isBlank()) {
+            throw new BusinessException(ExceptionEnum.NULL_FILENAME);
+        }
+
+        // Define the file storage path
+        String filePath = fileProperties.getStorageLocation() + File.separator + originalFilename;
+        File destination = new File(filePath);
+
+        // Ensure the directory exists
+        ensureDirectoryExists(destination.getParentFile());
+
+        // Write file to the storage path
+        Path path = Paths.get(filePath);
+        Files.write(path, file.getBytes()); // Write the file bytes to the defined path
+
+        // Save the file information into the database
+        FileEntity uploadedFile = new FileEntity();
+        uploadedFile.setName(originalFilename);
+        uploadedFile.setType(file.getContentType());
+        uploadedFile.setUrl(filePath);
+        fileRepository.save(uploadedFile);
+
+        return uploadedFile.getId(); // Return the ID after saving to the database
     }
-
-    // Define the file storage path
-    String filePath = fileProperties.getStorageLocation() + File.separator + originalFilename;
-    File destination = new File(filePath);
-
-    // Ensure the directory exists
-    ensureDirectoryExists(destination.getParentFile());
-
-    // Write file to the storage path
-    Path path = Paths.get(filePath);
-    Files.write(path, file.getBytes());  // Write the file bytes to the defined path
-
-    // Save the file information into the database
-    FileEntity uploadedFile = new FileEntity();
-    uploadedFile.setName(originalFilename);
-    uploadedFile.setType(file.getContentType());
-    uploadedFile.setUrl(filePath);
-    fileRepository.save(uploadedFile);
-
-    return uploadedFile.getId(); // Return the ID after saving to the database
-}
 
     // Ensure the directory exists, if not, create it
     private void ensureDirectoryExists(File directory) {
@@ -133,11 +133,11 @@ public class FileServiceImpl implements FileService {
         String extension = "";
         int dotIndex = originalFilename.lastIndexOf(".");
         if (dotIndex > 0) {
-            extension = originalFilename.substring(dotIndex);  // Get the file extension
+            extension = originalFilename.substring(dotIndex); // Get the file extension
         }
 
         String timestamp = String.valueOf(System.currentTimeMillis());
         String baseName = originalFilename.substring(0, dotIndex);
-        return baseName + "_" + timestamp + extension;  // Construct the new file name
+        return baseName + "_" + timestamp + extension; // Construct the new file name
     }
 }

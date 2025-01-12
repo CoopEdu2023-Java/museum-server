@@ -1,9 +1,9 @@
 package cn.moonshotacademy.museum.dto;
 
-import org.springframework.web.multipart.MultipartFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -11,4 +11,3 @@ import lombok.NoArgsConstructor;
 public class AvatarDto {
     private MultipartFile image;
 }
-

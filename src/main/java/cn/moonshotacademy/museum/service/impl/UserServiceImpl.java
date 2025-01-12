@@ -1,17 +1,13 @@
 package cn.moonshotacademy.museum.service.impl;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import cn.moonshotacademy.museum.config.FileProperties;
 import cn.moonshotacademy.museum.dto.AvatarDto;
 import cn.moonshotacademy.museum.entity.UserEntity;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.repository.UserRepository;
-import cn.moonshotacademy.museum.service.UserService;
 import cn.moonshotacademy.museum.service.ImageService;
-
+import cn.moonshotacademy.museum.service.UserService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,7 +25,8 @@ public class UserServiceImpl implements UserService {
     private final ImageService imageService;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
 
-    public UserServiceImpl(FileProperties fileProperties, UserRepository userRepository, ImageService imageService) {
+    public UserServiceImpl(
+            FileProperties fileProperties, UserRepository userRepository, ImageService imageService) {
         this.fileProperties = fileProperties;
         this.userRepository = userRepository;
         this.imageService = imageService;
@@ -38,17 +37,19 @@ public class UserServiceImpl implements UserService {
         MultipartFile image = requestData.getImage();
         String originalFilename = getNewFileName(image);
         validateFileType(image);
-        
+
         if (originalFilename.isBlank()) {
             throw new BusinessException(ExceptionEnum.NULL_FILENAME);
         }
 
-        UserEntity targetEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+        UserEntity targetEntity =
+                userRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
         String filePath = fileProperties.getUserAvatarLocation() + File.separator + originalFilename;
         Path destinationPath = Paths.get(filePath);
-        
+
         ensureDirectoryExists(destinationPath.getParent().toFile());
         Files.write(destinationPath, image.getBytes());
 

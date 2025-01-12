@@ -12,18 +12,15 @@ import cn.moonshotacademy.museum.repository.ArtifactRepository;
 import cn.moonshotacademy.museum.repository.UserRepository;
 import cn.moonshotacademy.museum.service.ArtifactService;
 import cn.moonshotacademy.museum.service.ImageService;
-import java.util.Arrays;
-
-import lombok.RequiredArgsConstructor;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
-
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,46 +34,51 @@ public class ArtifactServiceImpl implements ArtifactService {
     private final ImageService imageService;
     private final FileProperties fileProperties;
     private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("jpg", "jpeg", "png");
-    
-        @Override
-        public ArtifactEntity getArtifactById(int id) {
-            ArtifactEntity artifact = artifactRepository.findById(id) //AI说这里返回的是Optional<ArtifactEntity>，需要orElseThrow
-                    .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
-            System.out.println(artifact.getFiles());
-            return artifact;
-        }
-    
-        @Override
-        public int createEmptyArtifact(){
-            ArtifactEntity emptyArtifact = new ArtifactEntity();
-            emptyArtifact = artifactRepository.save(emptyArtifact);
-            return emptyArtifact.getId();
-        }
-    
-        @Override
-        public Page<ArtifactEntity> getArtifactList(Pageable pageable) {
-            return artifactRepository.findArtifactsByUsername(pageable);
-        }
-    
-        @Override
-        public Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable) {
-            return artifactRepository.searchByKeyword(keyword, pageable);
-        }
+
+    @Override
+    public ArtifactEntity getArtifactById(int id) {
+        ArtifactEntity artifact =
+                artifactRepository
+                        .findById(id) // AI说这里返回的是Optional<ArtifactEntity>，需要orElseThrow
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        System.out.println(artifact.getFiles());
+        return artifact;
+    }
+
+    @Override
+    public int createEmptyArtifact() {
+        ArtifactEntity emptyArtifact = new ArtifactEntity();
+        emptyArtifact = artifactRepository.save(emptyArtifact);
+        return emptyArtifact.getId();
+    }
+
+    @Override
+    public Page<ArtifactEntity> getArtifactList(Pageable pageable) {
+        return artifactRepository.findArtifactsByUsername(pageable);
+    }
+
+    @Override
+    public Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable) {
+        return artifactRepository.searchByKeyword(keyword, pageable);
+    }
 
     @Override
     public void uploadArtifactAvatar(AvatarDto requestData, int artifactId) throws IOException {
         MultipartFile image = requestData.getImage();
         String originalFilename = getNewFileName(image);
         validateFileType(image);
-        
-        ArtifactEntity targetEntity = artifactRepository.findById(artifactId)
-                .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
 
-        String filePath = fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
+        ArtifactEntity targetEntity =
+                artifactRepository
+                        .findById(artifactId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+
+        String filePath =
+                fileProperties.getArtifactAvatarLocation() + File.separator + originalFilename;
         Path destinationPath = Paths.get(filePath);
-        
+
         ensureDirectoryExists(destinationPath.getParent().toFile());
-        
+
         Files.write(destinationPath, image.getBytes());
 
         String fileUrl = imageService.createThumbnailedImage(filePath, 1000, 1000, false);
@@ -118,7 +120,7 @@ public class ArtifactServiceImpl implements ArtifactService {
 
         String timestamp = String.valueOf(System.currentTimeMillis());
         String baseName = originalFilename.substring(0, dotIndex);
-        return baseName + "_" + timestamp + extension;  // New file name with timestamp
+        return baseName + "_" + timestamp + extension; // New file name with timestamp
     }
 
     // Ensure the directory exists before file upload
@@ -134,7 +136,7 @@ public class ArtifactServiceImpl implements ArtifactService {
                 artifactRepository
                         .findById(artifactId)
                         .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
-        if (artifact.isDeleted()){
+        if (artifact.isDeleted()) {
             throw new BusinessException(ExceptionEnum.ARTIFACT_ALREADY_DELETED);
         }
         artifact.setDeleted(true);
@@ -143,8 +145,10 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Override
     public ArtifactEntity updateArtifactAndUser(Integer artifactId, UpdateDto dto) {
-        ArtifactEntity artifact = artifactRepository.findById(artifactId)
-            .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
+        ArtifactEntity artifact =
+                artifactRepository
+                        .findById(artifactId)
+                        .orElseThrow(() -> new BusinessException(ExceptionEnum.ARTIFACT_NOT_FOUND));
 
         artifact.setTitle(dto.getTitle());
         artifact.setIntro(dto.getIntro());
@@ -155,8 +159,10 @@ public class ArtifactServiceImpl implements ArtifactService {
         Set<Integer> newUserIds = dto.getUserIds();
         currentUsers.removeIf(user -> !newUserIds.contains(user.getId()));
         for (Integer userId : dto.getUserIds()) {
-            UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
+            UserEntity user =
+                    userRepository
+                            .findById(userId)
+                            .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
             user.setEmail(dto.getEmail());
             user.setType(dto.getRole());
             user.setDefaultName(dto.getDefaultName());
