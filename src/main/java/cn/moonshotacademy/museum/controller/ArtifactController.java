@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/artifacts")
 @RequiredArgsConstructor
 public class ArtifactController {
-
     @Autowired private SecurityService securityService;
-
     @Autowired private ArtifactService artifactService;
 
     @GetMapping("")
@@ -34,13 +32,11 @@ public class ArtifactController {
         try {
             int pageNumber = Integer.parseInt(page);
             int pageSize = Integer.parseInt(size);
-
             if (pageNumber < 0 || pageSize <= 0) {
                 log.warn("Invalid pagination parameters: page={}, size={}", page, size);
                 throw new BusinessException(ExceptionEnum.INVALID_ENTRY);
             }
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-
             if (search.isEmpty()) {
                 return ResponseDto.success(artifactService.getArtifactList(pageable));
             } else {
@@ -55,16 +51,12 @@ public class ArtifactController {
     @GetMapping("/{id}/get")
     public ResponseDto<ArtifactEntity> getArtifactById(@PathVariable String id) {
         int artifactId;
-
         try {
             artifactId = Integer.parseInt(id);
-
         } catch (NumberFormatException e) {
             throw new BusinessException(ExceptionEnum.ILLEGAL_PARAMETERS);
         }
-
         ArtifactEntity data = artifactService.getArtifactById(artifactId);
-
         return new ResponseDto<ArtifactEntity>(data);
     }
 
