@@ -187,18 +187,14 @@ public class ArtifactServiceImpl implements ArtifactService {
         artifact.setAvatarUrl(artifactDto.getAvatarUrl());
         artifact.setIntro(artifactDto.getIntro());
         artifact.setCompetency(artifactDto.getCompetency());
-
         for (Integer userId : artifactDto.getUserIds()) {
             UserEntity user =
                     userRepository
                             .findById(userId)
                             .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
-
             artifact.getUserList().add(user);
         }
-
         artifactRepository.save(artifact);
-
         return artifactId;
     }
 }
