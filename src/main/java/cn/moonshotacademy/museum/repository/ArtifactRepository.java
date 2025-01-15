@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ArtifactRepository extends JpaRepository<ArtifactEntity, Integer> {
-    List<ArtifactEntity> findByCompetency(String competency);
+    List<ArtifactEntity> findByCompetencyAndIsDeletedFalse(String competency);
     @Query("SELECT a FROM ArtifactEntity a LEFT JOIN FETCH a.userList u WHERE a.isDeleted = FALSE ORDER BY a.id DESC")
     Page<ArtifactEntity> findArtifactsByUsername(Pageable pageable);
 

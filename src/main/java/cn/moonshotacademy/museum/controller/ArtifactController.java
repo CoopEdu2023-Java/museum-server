@@ -84,7 +84,7 @@ public class ArtifactController {
             if (competency.isEmpty()) {
                 return ResponseDto.success(artifactRepository.findAll());
             }else{
-                return ResponseDto.success(artifactRepository.findByCompetency(competency));
+                return ResponseDto.success(artifactRepository.findByCompetencyAndIsDeletedFalse(competency));
             }
         }
     @PostMapping("/create")

@@ -12,9 +12,12 @@ import cn.moonshotacademy.museum.service.JwtService;
 import cn.moonshotacademy.museum.service.UserService;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -153,6 +156,27 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private static String sha256(String input) {
+        try {
+            // 获取SHA-256的MessageDigest实例
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            // 将输入字符串转换为字节并进行哈希计算
+            byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // 将字节数组转换为十六进制字符串
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                // 转成无符号十六进制数并拼接
+                hexString.append(String.format("%02x", b));
+            }
+
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // 出现异常时，可以根据需求进行处理
+            throw new RuntimeException(e);
+        }
+    }
+    
     public String login(LoginRequestDto loginRequestDto) {
         UserEntity userFromUserName;
         if (userRepository.findByEnglishName(loginRequestDto.getName()) == null || userRepository.findByDefaultName(loginRequestDto.getName()) == null) {
@@ -162,12 +186,13 @@ public class UserServiceImpl implements UserService {
             userFromUserName = userRepository.findByDefaultName(loginRequestDto.getName())
                     .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
         }else{
-            System.out.println(222222222);
+            System.out.println(loginRequestDto.getName());
             userFromUserName = userRepository.findByEnglishName(loginRequestDto.getName())
                     .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
         }
 
-        UserEntity userFromEmail = userRepository.findByEmail(loginRequestDto.getEmail())
+        System.out.println(sha256(loginRequestDto.getEmail()));
+        UserEntity userFromEmail = userRepository.findByEncryptedEmail(sha256(loginRequestDto.getEmail().toLowerCase()))
                         .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
         System.out.println(userFromEmail);
         if(userFromEmail.equals(userFromUserName)) {

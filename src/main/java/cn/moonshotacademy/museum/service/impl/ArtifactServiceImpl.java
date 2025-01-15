@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -191,14 +192,17 @@ public class ArtifactServiceImpl implements ArtifactService {
         artifact.setIntro(artifactDto.getIntro());
         artifact.setCompetency(artifactDto.getCompetency());
 
+        Set<UserEntity> userList = new HashSet<>();
+
         for (Integer userId : artifactDto.getUserIds()) {
             System.out.println("userId: " + userId);
             UserEntity user = userRepository
                     .findById(userId)
                     .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
 
-            artifact.getUserList().add(user);
+            userList.add(user);
         }
+        artifact.setUserList(userList);
 
         artifactRepository.save(artifact);
 

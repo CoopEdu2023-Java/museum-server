@@ -19,6 +19,7 @@ public class UserEntity {
 
     private String type;
     private String email;
+    private String encryptedEmail;
     private String defaultName;
     private String englishName;
     private String intro;

@@ -54,7 +54,6 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseDto<String> login(@RequestBody LoginRequestDto loginRequestDto) {
-        System.out.println(123123);
         System.out.println(loginRequestDto.getName());
         System.out.println(loginRequestDto.getEmail());
         String token = userService.login(loginRequestDto);
