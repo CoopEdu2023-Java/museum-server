@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+src/main/java/cn/moonshotacademy/museum/config/SecurityConfig.java
+.gitignore
+pom.xml
+/public
