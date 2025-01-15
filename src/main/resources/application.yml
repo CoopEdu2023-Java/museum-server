@@ -1,4 +1,7 @@
 spring:
+  autoconfigure:
+    exclude: 
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   application:
     name: msa-museum-server
   datasource:
@@ -13,3 +16,4 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
