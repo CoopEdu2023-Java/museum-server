@@ -2,7 +2,7 @@ package cn.moonshotacademy.museum.config;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +12,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired private JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -23,7 +24,7 @@ public class SecurityConfig {
                         req ->
                                 req.requestMatchers("/tests/*")
                                         .permitAll()
-                                        .requestMatchers("/users/login", "/users/add")
+                                        .requestMatchers("/users/login", "/users/add", "/artifacts")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

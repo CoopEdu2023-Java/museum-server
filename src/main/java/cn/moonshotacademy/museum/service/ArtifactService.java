@@ -1,0 +1,11 @@
+package cn.moonshotacademy.museum.service;
+
+import cn.moonshotacademy.museum.entity.ArtifactEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface ArtifactService {
+    Page<ArtifactEntity> getArtifactList(Pageable pageable);
+
+    Page<ArtifactEntity> searchFiles(String keyword, Pageable pageable);
+}
