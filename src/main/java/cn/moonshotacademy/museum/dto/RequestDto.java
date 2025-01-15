@@ -12,11 +12,7 @@ public class RequestDto {
     private String competency;        
     private String category;         
     private String type;             
+    private String avatar_url;
     private Set<Integer> userIds;     
-
-    private String email;           
-    private String role;              
-    private String defaultName;       
-    private String englishName;      
-    private String userIntro;        
+    private Set<Integer> fileIds;    
 }

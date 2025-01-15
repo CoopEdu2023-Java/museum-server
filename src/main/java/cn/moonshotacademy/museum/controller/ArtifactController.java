@@ -16,11 +16,11 @@ public class ArtifactController {
 
     @PutMapping("/{artifactId}/update")
     public ResponseDto<?> updateArtifactAndUser(
-            @PathVariable Integer artifactId,   
+            @PathVariable Integer artifactId,
             @RequestBody RequestDto RequestDto) {
             ArtifactEntity updatedArtifact = artifactService.updateArtifactAndUser(artifactId, RequestDto);
 
-            return ResponseDto.success("Artifact and User updated successfully. Artifact: " +
-                    updatedArtifact.toString());
+            return ResponseDto.success("Artifact updated successfully. Artifact ID: " +
+                    updatedArtifact.getId());
     }
 }

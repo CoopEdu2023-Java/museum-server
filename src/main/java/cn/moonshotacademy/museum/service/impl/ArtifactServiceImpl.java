@@ -1,10 +1,12 @@
 package cn.moonshotacademy.museum.service.impl;
 
 import cn.moonshotacademy.museum.entity.ArtifactEntity;
+import cn.moonshotacademy.museum.entity.FileEntity;
 import cn.moonshotacademy.museum.entity.UserEntity;
 import cn.moonshotacademy.museum.dto.RequestDto;
 import cn.moonshotacademy.museum.repository.ArtifactRepository;
 import cn.moonshotacademy.museum.repository.UserRepository;
+import cn.moonshotacademy.museum.repository.FileRepository;
 import cn.moonshotacademy.museum.exception.BusinessException;
 import cn.moonshotacademy.museum.exception.ExceptionEnum;
 import cn.moonshotacademy.museum.service.ArtifactService;
@@ -23,6 +25,9 @@ public class ArtifactServiceImpl implements ArtifactService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FileRepository fileRepository;
     @Transactional
     @Override
     public ArtifactEntity updateArtifactAndUser(Integer artifactId, RequestDto dto) {
@@ -33,6 +38,7 @@ public class ArtifactServiceImpl implements ArtifactService {
         artifact.setIntro(dto.getIntro());
         artifact.setCompetency(dto.getCompetency());
         artifact.setCategory(dto.getCategory());
+        artifact.setAvatarUrl(dto.getAvatar_url());
         artifact.setType(dto.getType());
 
         Set<UserEntity> currentUsers = artifact.getUserList();
@@ -41,18 +47,20 @@ public class ArtifactServiceImpl implements ArtifactService {
         for (Integer userId : dto.getUserIds()) {
             UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ExceptionEnum.USER_NOT_FOUND));
-            user.setEmail(dto.getEmail());
-            user.setRole(dto.getRole());
-            user.setDefaultName(dto.getDefaultName());
-            user.setEnglishName(dto.getEnglishName());
-            user.setIntro(dto.getUserIntro());
            
             currentUsers.add(user);
             user.getArtifactList().add(artifact);
             
             userRepository.save(user);
         }
-        
+
+        for (Integer fileId : dto.getFileIds()) {
+            FileEntity file = fileRepository.findById(fileId)
+                .orElseThrow(() -> new BusinessException(ExceptionEnum.FILE_NOT_FOUND));
+            file.setArtifact(artifact);
+        }
+
+
         return artifactRepository.save(artifact);
     }
 }

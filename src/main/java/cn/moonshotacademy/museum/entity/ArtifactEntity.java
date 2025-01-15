@@ -9,6 +9,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "artifact")
+
 public class ArtifactEntity {
 
     @Id
@@ -29,6 +30,6 @@ public class ArtifactEntity {
         joinColumns = @JoinColumn(name = "artifact_id"),  // Artifact 表的外键
         inverseJoinColumns = @JoinColumn(name = "user_id")  // User 表的外键
     )
-    
     private Set<UserEntity> userList = new HashSet<>();
+
 }
