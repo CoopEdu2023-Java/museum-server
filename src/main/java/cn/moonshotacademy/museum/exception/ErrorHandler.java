@@ -5,16 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 @Slf4j
 public class ErrorHandler {
 
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    @ResponseBody
+    public ResponseDto<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        log.error("File upload error: " + e.getMessage());
+        return ResponseDto.error(4002, "File size exceeds the maximum allowed limit");
+    }
+
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public ResponseDto<Void> exceptionHandler(Exception e) {
         log.error("Unknown Error: " + e.getMessage());
-        return ResponseDto.error(1000, "Unknown Error");
+        return ResponseDto.error(1000, e.getMessage());
     }
 
     @ExceptionHandler(value = BusinessException.class)

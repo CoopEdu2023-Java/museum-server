@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: msa_museum
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 7gX@L#wP!9bRz^k8N2d&Fq3TmVp4C%Yj6H&xK5JrZLtWQ*Bm7v9!
+    ports:
+      - "1145:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./public/files:/app/public/files
+      - ./public/userAvatars:/app/public/userAvatars
+      - ./public/artifactAvatars:/app/public/artifactAvatars
+    container_name: springboot-app
+    ports:
+      - "1919:8080"
+    depends_on:
+      - postgres
+    environment:
+      # 数据库连接配置
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/msa_museum
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 7gX@L#wP!9bRz^k8N2d&Fq3TmVp4C%Yj6H&xK5JrZLtWQ*Bm7v9!
+      # 文件存储路径（在容器中）
+      FILE_STORAGE_LOCATION: /app/public/files
+      FILE_USER_AVATAR_LOCATION: /app/public/userAvatars
+      FILE_ARTIFACT_AVATAR_LOCATION: /app/public/artifactAvatars
+      # 文件访问 URL 基础路径
+      FILE_STORAGE_URL_BASE: /files/
+      FILE_USER_AVATAR_URL_BASE: /userAvatars/
+      FILE_ARTIFACT_AVATAR_URL_BASE: /artifactAvatars/
+
+volumes:
+  postgres_data:
